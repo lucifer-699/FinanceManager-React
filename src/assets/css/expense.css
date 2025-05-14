@@ -1,0 +1,259 @@
+/* Reset & Layout */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f4f4;
+}
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+.dashboard {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+
+/* Sidebar */
+
+.sidebar {
+  width: 220px;
+  background-color: #1e293b;
+  color: white;
+  height: 100vh;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: 55px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: -12%;
+}
+.sidebar.collapsed .collapse-btn{
+  margin-left: -90%;
+}
+/* Navigation */
+/* Navigation Buttons */
+.nav-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  border-radius: 4px;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  background-color: #334155;
+}
+
+.sidebar.collapsed .nav-btn span {
+  display: none;
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar nav ul li {
+  padding: 0;
+  margin: 0.2rem 0;
+}
+
+.logout-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  border-radius: 4px;
+}
+
+.logout-btn:hover,
+.logout-btn.active {
+  background-color: #334155;
+}
+
+.sidebar.collapsed .logout-btn span {
+  display: none;
+}
+
+
+.nav-wrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.logout-wrapper {
+  padding: 1rem;
+  border-top: 1px solid #334155;
+}
+
+/* Topbar */
+.topbar {
+  background: #ffffff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.topbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.income-btn,
+.expense-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #1e293b;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.profile {
+  font-weight: bold;
+}
+
+/* Shared: Income / Expense Pages */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  color: #1e293b;
+}
+
+.add-btn {
+  background-color: #ef4444; /* red for expense (green for income) */
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-btn:hover {
+  background-color: #dc2626;
+}
+
+.table-section {
+  padding: 0 2rem 2rem;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.data-table thead {
+   background-color: #cfdfef;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.edit-btn,
+.delete-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  color: #475569;
+  transition: color 0.2s;
+}
+
+.edit-btn:hover {
+  color: #3b82f6;
+}
+
+.delete-btn:hover {
+  color: #ef4444;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .charts {
+    flex-direction: column;
+  }
+}
