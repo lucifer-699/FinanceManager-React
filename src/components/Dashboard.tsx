@@ -48,7 +48,7 @@ useEffect(() => {
         <nav id="navMenu">
           <ul>
             <li>
-              <Link to="/" className={`nav-btn ${isActive('/') ? 'active' : ''}`}>
+              <Link to="/dashboard" className={`nav-btn ${isActive('/') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faTachometerAlt} /> <span>Dashboard</span>
               </Link>
             </li>
@@ -88,7 +88,7 @@ useEffect(() => {
               </Link>
             </li>
             <li>
-              <Link to="/login" className="logout-btn">
+              <Link to="/" className="logout-btn">
                 <FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span>
               </Link>
             </li>
@@ -98,17 +98,16 @@ useEffect(() => {
 
       <main className="dashboard">
         <header className="topbar">
-          <div className="topbar-content">
-            <div className="logo">💼 <span>FinDash</span></div>
-            <div className="actions">
-              <button className="income-btn">Income</button>
-              <button className="expense-btn">Expense</button>
-              <FontAwesomeIcon icon={faBell} />
-              <div className="profile">Sishir Shrestha</div>
-            </div>
-          </div>
-        </header>
-
+              <div className="topbar-content">
+                <div className="title">Transactions</div>
+                <div className="actions">
+                  <button className="income-btn">Income</button>
+                  <button className="expense-btn">Expense</button>
+                  <FontAwesomeIcon icon={faBell} />
+                  <div className="profile">Sishir Shrestha</div>
+                </div>
+              </div>
+            </header>
         <section className="cards">
           <div className="card">
             <h3>Total Balance</h3>

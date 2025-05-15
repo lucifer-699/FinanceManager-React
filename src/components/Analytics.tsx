@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faFileAlt, faCog,
-  faSignOutAlt
+  faSignOutAlt,faBell
 } from '@fortawesome/free-solid-svg-icons'; // assuming global or modular styles
 
 const Analytics: React.FC = () => {
@@ -45,7 +45,7 @@ useEffect(() => {
         <nav id="navMenu">
           <ul>
             <li>
-              <Link to="/" className={`nav-btn ${isActive('/') ? 'active' : ''}`}>
+              <Link to="/dashboard" className={`nav-btn ${isActive('/dashboard') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faTachometerAlt} /> <span>Dashboard</span>
               </Link>
             </li>
@@ -85,7 +85,7 @@ useEffect(() => {
               </Link>
             </li>
             <li>
-              <Link to="/login" className="logout-btn">
+              <Link to="/" className="logout-btn">
                 <FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span>
               </Link>
             </li>
@@ -93,17 +93,17 @@ useEffect(() => {
         </nav>
       </aside>
  <main className="dashboard">
-      <header className="topbar">
-        <div className="topbar-content">
-          <div className="logo"><span>Financial Analytics</span></div>
-          <div className="actions">
-            <button className="income-btn">Income</button>
-            <button className="expense-btn">Expense</button>
-            <i className="fas fa-bell"></i>
-            <div className="profile">Sishir Shrestha</div>
-          </div>
-        </div>
-      </header>
+     <header className="topbar">
+           <div className="topbar-content">
+             <div className="title">Transactions</div>
+             <div className="actions">
+               <button className="income-btn">Income</button>
+               <button className="expense-btn">Expense</button>
+               <FontAwesomeIcon icon={faBell} />
+               <div className="profile">Sishir Shrestha</div>
+             </div>
+           </div>
+         </header>
 
       <section className="charts">
         <div className="chart-card">

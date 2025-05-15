@@ -113,33 +113,36 @@ body, html {
     display: flex;
     gap: 1rem;
     align-items: center;
+    margin-bottom: -10px;
   }
-  
-  .income-btn,
-  .expense-btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    background-color: #1e293b;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .income-btn:hover {
-  transform: translateY(-1px);
+.income-btn,
+.expense-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #1e293b;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.income-btn:hover {
+   transform: translateY(-4px);
+  transition: background-color 0.3s ease;;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
  background-color: lightgreen;
   color: #065f46;;
 }
 .expense-btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-4px);
+  transition: background-color 0.3s ease;;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
  background-color:  #ff6666;
   color: #065f46;;
 }
-  .profile {
-    font-weight: bold;
-  }
+.profile {
+  font-weight: bold;
+    color: black;
+}
+
   
   /* Cards */
   .cards {

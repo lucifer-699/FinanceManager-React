@@ -227,6 +227,7 @@ body, html {
   margin-top: 0.3rem;
   background-color: #f9fafb;
   transition: border-color 0.2s ease;
+  color: black;
 }
 
 .settings-section input:focus,
@@ -256,4 +257,77 @@ body, html {
 .settings-section label input[type="checkbox"] {
   margin-right: 0.5rem;
   vertical-align: middle;
+}
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  font-size: 16px;
+  user-select: none;
+}
+
+/* Hide default checkbox */
+.checkbox-container input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+/* Custom checkmark box */
+.checkbox-container .checkmark {
+  position: absolute;
+  left: 0;
+  top: 3px;
+  height: 20px;
+  width: 20px;
+  background-color: rgb(223, 221, 221);
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin-left: 14%;
+}
+
+/* When checkbox is checked */
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #007bff;
+}
+
+/* Tick mark inside checkmark box */
+.checkbox-container .checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark::after {
+  display: block;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Text next to checkbox */
+.checkbox-label {
+  margin-left: -28px;
+  font-weight: 500;
+}
+.settings-section {
+  color: black; /* Default text color */
+  font-family: Arial, sans-serif;
+}
+
+.checkbox-container,
+.checkbox-label,
+.settings-section label,
+.settings-section select,
+.settings-section h3 {
+  color: black;
+  font-weight: 300;
 }

@@ -48,7 +48,7 @@ useEffect(() => {
         <nav id="navMenu">
           <ul>
             <li>
-              <Link to="/" className={`nav-btn ${isActive('/') ? 'active' : ''}`}>
+              <Link to="/dashboard" className={`nav-btn ${isActive('/dashboard') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faTachometerAlt} /> <span>Dashboard</span>
               </Link>
             </li>
@@ -88,7 +88,7 @@ useEffect(() => {
               </Link>
             </li>
             <li>
-              <Link to="/login" className="logout-btn">
+              <Link to="/" className="logout-btn">
                 <FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span>
               </Link>
             </li>
