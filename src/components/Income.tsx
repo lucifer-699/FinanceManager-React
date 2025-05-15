@@ -110,7 +110,7 @@ useEffect(() => {
 
         <section className="section-header">
           <h2>Income Overview</h2>
-          <button className="add-btn"><FontAwesomeIcon icon={faPlus}/> Add Income</button>
+          <button className="addbtn"><FontAwesomeIcon icon={faPlus}/> Add Income</button>
         </section>
 
         <section className="table-section">

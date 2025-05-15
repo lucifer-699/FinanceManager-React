@@ -199,8 +199,8 @@ body, html {
   color: #1e293b;
 }
 
-.add-btn {
-  background-color: #10b981;
+.addbtn {
+  background-color: #069265;
   color: white;
   border: none;
   padding: 0.5rem 1.2rem;
@@ -210,8 +210,8 @@ body, html {
   transition: background-color 0.3s ease;
 }
 
-.add-btn:hover {
-  background-color: #059669;
+.addbtn:hover {
+  background-color: darkgreen;
 }
 
 .table-section {
