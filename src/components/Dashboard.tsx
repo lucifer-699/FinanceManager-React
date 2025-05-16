@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { fetchDashboardData } from '../api/api'; // Import the API function
 import '../assets/css/dashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,39 +12,81 @@ import {
 const Dashboard: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+  const [dashboardData, setDashboardData] = useState<any>(null); // State to hold dashboard data 
 
-useEffect(() => {
-  const collapseBtn = document.getElementById("collapseBtn");
-  const sidebar = document.getElementById("sidebar");
 
-  const handleCollapse = () => {
-    if (sidebar) {
-      sidebar.classList.toggle("collapsed");
+  useEffect(() => {
+    // Fetch the dashboard data when the component mounts
+    const getDashboardData = async () => {
+      try {
+      const data = await fetchDashboardData();
+      if (Array.isArray(data)) {
+        setDashboardData(data[0]); // Assuming data is an array and we're using the first item
+      } else {
+        setDashboardData(data); // fallback if data is not an array
+      }
+
+      // Move collapseBtn and sidebar logic into useEffect after DOM is updated
+      setTimeout(() => {
+        const collapseBtn = document.getElementById("collapseBtn");
+        const sidebar = document.getElementById("sidebar");
+
+        const handleCollapse = () => {
+          if (sidebar) {
+        sidebar.classList.toggle("collapsed");
+          }
+        };
+
+        if (collapseBtn) {
+          collapseBtn.addEventListener("click", handleCollapse);
+        }
+
+        // Clean up event listener on unmount
+        return () => {
+          if (collapseBtn) {
+        collapseBtn.removeEventListener("click", handleCollapse);
+          }
+        };
+      }, 0);
+      } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    getDashboardData();
+
+    const collapseBtn = document.getElementById("collapseBtn");
+    const sidebar = document.getElementById("sidebar");
+
+    const handleCollapse = () => {
+      if (sidebar) {
+        sidebar.classList.toggle("collapsed");
+      }
+    };
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener("click", handleCollapse);
     }
-  };
 
-  if (collapseBtn) {
-    collapseBtn.addEventListener("click", handleCollapse);
+    return () => {
+      if (collapseBtn) {
+        collapseBtn.removeEventListener("click", handleCollapse);
+      }
+    };
+  }, []); // Empty dependency array to run once when the component mounts
+
+  if (!dashboardData) {
+    return <div>Loading...</div>; // Show a loading state until the data is fetched
   }
 
-  return () => {
-    if (collapseBtn) {
-      collapseBtn.removeEventListener("click", handleCollapse);
-    }
-  };
-}, []);
-
-
-
   return (
-    <div className="container">
+   <div className="container">
       <aside className="sidebar" id="sidebar">
         <div className="sidebar-header">
           <button className="collapse-btn" id="collapseBtn">
             <FontAwesomeIcon icon={faBars} />
           </button>
         </div>
-
         <nav id="navMenu">
           <ul>
             <li>
@@ -95,11 +137,10 @@ useEffect(() => {
           </ul>
         </nav>
       </aside>
-
-      <main className="dashboard">
+         <main className="dashboard">
         <header className="topbar">
               <div className="topbar-content">
-                <div className="title">Transactions</div>
+                <div className="title">Dashboard</div>
                 <div className="actions">
                   <button className="income-btn">Income</button>
                   <button className="expense-btn">Expense</button>
@@ -107,30 +148,32 @@ useEffect(() => {
                   <div className="profile">Sishir Shrestha</div>
                 </div>
               </div>
-            </header>
+            </header> 
+
         <section className="cards">
           <div className="card">
             <h3>Total Balance</h3>
-            <p className="amount">$12,456.78</p>
-            <p className="note">+5.2% from last month</p>
+            <p className="amount">Rs {dashboardData.balance}</p>
+            <p className="note">{`+Rs ${parseFloat(dashboardData.balancechange) - 0} from last month`}</p>
           </div>
           <div className="card">
             <h3>Income <span className="down">&#x25BC;</span></h3>
-            <p className="amount">$4,500.00</p>
-            <p className="note">+$650 from last month</p>
+            <p className="amount">Rs {dashboardData.totalIncome}</p>
+            <p className="note">{`+Rs ${parseFloat(dashboardData.incomeChange) - 0} from last month`}</p>
           </div>
           <div className="card-expense">
             <h3>Expenses <span className="up">&#x25B2;</span></h3>
-            <p className="amount">$2,043.22</p>
-            <p className="note">+$320 from last month</p>
+            <p className="amount">Rs {dashboardData.totalExpense}</p>
+            <p className="note">{`+Rs ${parseFloat(dashboardData.expenseChange) - 0} from last month`}</p>
           </div>
           <div className="card">
             <h3>Savings <FontAwesomeIcon icon={faPiggyBank} /></h3>
-            <p className="amount">$1,200.00</p>
-            <p className="note">15% of income</p>
+            <p className="amount">Rs {dashboardData.savings}</p>
+            <p className="note">{`${dashboardData.savingPercent}% of income`}</p>
           </div>
         </section>
 
+        {/* Charts section remains unchanged */}
         <section className="charts">
           <div className="chart-card">
             <h3>Income vs Expenses</h3>
