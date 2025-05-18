@@ -22,7 +22,8 @@ const Login: React.FC = () => {
   
     // Clear any existing credentials on mount
     localStorage.removeItem("token");
-    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("userid");
+    sessionStorage.removeItem("email");
     sessionStorage.removeItem("password");
   }, []);
   

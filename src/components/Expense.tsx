@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { fetchExpenseTable } from '../api/api';
 import '../assets/css/expense.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,29 +13,72 @@ import { useEffect } from 'react';
 const Expense: React.FC = () => {
    const location = useLocation();
    const isActive = (path: string) => location.pathname === path;
+   const [expenseData, setExpenseData] = useState<any[]>([]);
 
 
-useEffect(() => {
-  const collapseBtn = document.getElementById("collapseBtn");
-  const sidebar = document.getElementById("sidebar");
+ useEffect(() => {
+    // Fetch the dashboard data when the component mounts
+    const getDashboardData = async () => {
+      try {
+      const data = await fetchExpenseTable();
+      if (Array.isArray(data)) {
+        setExpenseData(data); // If data is already an array, use it directly
+      } else {
+        setExpenseData([]); // fallback: ensure it's always an array
+      }
 
-  const handleCollapse = () => {
-    if (sidebar) {
-      sidebar.classList.toggle("collapsed");
-    }
-  };
+      // Move collapseBtn and sidebar logic into useEffect after DOM is updated
+      setTimeout(() => {
+        const collapseBtn = document.getElementById("collapseBtn");
+        const sidebar = document.getElementById("sidebar");
 
-  if (collapseBtn) {
-    collapseBtn.addEventListener("click", handleCollapse);
-  }
+        const handleCollapse = () => {
+          if (sidebar) {
+        sidebar.classList.toggle("collapsed");
+          }
+        };
 
-  return () => {
+        if (collapseBtn) {
+          collapseBtn.addEventListener("click", handleCollapse);
+        }
+
+        // Clean up event listener on unmount
+        return () => {
+          if (collapseBtn) {
+        collapseBtn.removeEventListener("click", handleCollapse);
+          }
+        };
+      }, 0);
+      } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    getDashboardData();
+
+    const collapseBtn = document.getElementById("collapseBtn");
+    const sidebar = document.getElementById("sidebar");
+
+    const handleCollapse = () => {
+      if (sidebar) {
+        sidebar.classList.toggle("collapsed");
+      }
+    };
+
     if (collapseBtn) {
-      collapseBtn.removeEventListener("click", handleCollapse);
+      collapseBtn.addEventListener("click", handleCollapse);
     }
-  };
-}, []);
 
+    return () => {
+      if (collapseBtn) {
+        collapseBtn.removeEventListener("click", handleCollapse);
+      }
+    };
+  }, []); // Empty dependency array to run once when the component mounts
+
+  if (!expenseData) {
+    return <div>Loading...</div>; // Show a loading state until the data is fetched
+  }
 
   return (
    <div className="container">
@@ -118,34 +162,32 @@ useEffect(() => {
           <thead>
             <tr>
               <th>Date</th>
-              <th>Description</th>
+              <th>Source</th>
               <th>Amount</th>
               <th>Category</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>2025-05-11</td>
-              <td>Groceries</td>
-              <td>$150.00</td>
-              <td>Food</td>
-              <td>
-                   <button className="edit-btn"><FontAwesomeIcon icon={faEdit} /></button>
-                   <button className="delete-btn"><FontAwesomeIcon icon={faTrashAlt} /></button>
-              </td>
-            </tr>
-            <tr>
-              <td>2025-05-08</td>
-              <td>Internet Bill</td>
-              <td>$60.00</td>
-              <td>Utilities</td>
-              <td>
-                    <button className="edit-btn"><FontAwesomeIcon icon={faEdit} /></button>
-                    <button className="delete-btn"><FontAwesomeIcon icon={faTrashAlt} /></button>
-            </td>
-            </tr>
-          </tbody>
+        <tbody>
+                     {expenseData.length > 0 ? (
+                       expenseData.map((expense, index) => (
+                         <tr key={index}>
+                           <td>{expense.createDate ? new Date(expense.createDate).toISOString().slice(0, 10) : 'N/A'}</td>
+                           <td>{expense.categoryName || 'N/A'}</td>
+                           <td>{expense.amount ? `Rs  ${parseFloat(expense.amount).toFixed(0)}` : 'N/A'}</td>
+                           <td>{expense.categoryType || 'N/A'}</td>
+                           <td>
+                             <button className="edit-btn"><FontAwesomeIcon icon={faEdit} /></button>
+                             <button className="delete-btn"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                           </td>
+                         </tr>
+                       ))
+                     ) : (
+                       <tr>
+                         <td colSpan={5}>No expense records found.</td>
+                       </tr>
+                     )}
+                   </tbody>
         </table>
       </section>
     </main>

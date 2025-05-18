@@ -20,38 +20,38 @@ const Dashboard: React.FC = () => {
     const getDashboardData = async () => {
       try {
       const data = await fetchDashboardData();
-      if (Array.isArray(data)) {
-        setDashboardData(data[0]); // Assuming data is an array and we're using the first item
-      } else {
-        setDashboardData(data); // fallback if data is not an array
-      }
+       console.log(data); 
+    if (Array.isArray(data)) {
+      setDashboardData(data[0]); // Assuming data is an array and we're using the first item
+    } else {
+      setDashboardData(data); // fallback if data is not an array
+    }
+    // Move collapseBtn and sidebar logic into useEffect after DOM is updated
+    setTimeout(() => {
+      const collapseBtn = document.getElementById("collapseBtn");
+      const sidebar = document.getElementById("sidebar");
 
-      // Move collapseBtn and sidebar logic into useEffect after DOM is updated
-      setTimeout(() => {
-        const collapseBtn = document.getElementById("collapseBtn");
-        const sidebar = document.getElementById("sidebar");
-
-        const handleCollapse = () => {
-          if (sidebar) {
-        sidebar.classList.toggle("collapsed");
-          }
-        };
-
-        if (collapseBtn) {
-          collapseBtn.addEventListener("click", handleCollapse);
+      const handleCollapse = () => {
+        if (sidebar) {
+          sidebar.classList.toggle("collapsed");
         }
+      };
 
-        // Clean up event listener on unmount
-        return () => {
-          if (collapseBtn) {
-        collapseBtn.removeEventListener("click", handleCollapse);
-          }
-        };
-      }, 0);
-      } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      if (collapseBtn) {
+        collapseBtn.addEventListener("click", handleCollapse);
       }
-    };
+
+      // Clean up event listener on unmount
+      return () => {
+        if (collapseBtn) {
+          collapseBtn.removeEventListener("click", handleCollapse);
+        }
+      };
+    }, 0);
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+  }
+  };
 
     getDashboardData();
 
@@ -145,7 +145,7 @@ const Dashboard: React.FC = () => {
                   <button className="income-btn">Income</button>
                   <button className="expense-btn">Expense</button>
                   <FontAwesomeIcon icon={faBell} />
-                  <div className="profile">Sishir Shrestha</div>
+                  <div className="profile">{dashboardData.firstname} {dashboardData.lastname}</div>
                 </div>
               </div>
             </header> 

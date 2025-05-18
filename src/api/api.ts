@@ -8,8 +8,9 @@ const API_BASE_URL = "http://localhost:8442";
 export const loginUser = async (email: string, password: string) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/user/login`, { email, password });
-    const data = response.data as { token: string };
-    storage.set("token", data.token, 60); 
+    const data = response.data as { token: string, userid: string };
+    storage.set("token", data.token, 60);
+    storage.set("userid", data.userid , 60); 
     storage.set("email", email, 60);
     storage.set("password", password, 60);
     return data;
@@ -22,7 +23,10 @@ export const loginUser = async (email: string, password: string) => {
 // Existing function to fetch dashboard data
 export const fetchDashboardData = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/finance/dashboard`);
+    const userid = storage.get("userid");
+    const response = await axios.get(`${API_BASE_URL}/finance/dashboard`, {
+      params: { userid },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
@@ -30,13 +34,30 @@ export const fetchDashboardData = async () => {
   }
 };
 
+
 // ✅ New function to fetch income table data
 export const fetchIncomeTable = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/finance/incometable`);
-    return response.data; // should return a List<IncomeDTO>
+    const userid = storage.get("userid");
+    const response = await axios.get(`${API_BASE_URL}/finance/incometable`, {
+      params: { userid },
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching income table data:", error);
     throw error;
   }
 };
+export const fetchExpenseTable = async () => {
+  try {
+    const userid = storage.get("userid");
+    const response = await axios.get(`${API_BASE_URL}/finance/expensetable`, {
+      params: { userid },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching expense table data:", error);
+    throw error;
+  }
+};
+
