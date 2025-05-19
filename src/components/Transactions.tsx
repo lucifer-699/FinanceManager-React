@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
 import '../assets/css/transactions.css';
+import { fetchTransactionTable } from '../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
@@ -12,28 +12,72 @@ import {
 const Transactions: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+const [transactionData, settransactionData] = useState<any[]>([]);
 
+ useEffect(() => {
+    // Fetch the dashboard data when the component mounts
+    const getDashboardData = async () => {
+      try {
+      const data = await fetchTransactionTable();
+      if (Array.isArray(data)) {
+        settransactionData(data); // If data is already an array, use it directly
+      } else {
+        settransactionData([]); // fallback: ensure it's always an array
+      }
 
-useEffect(() => {
-  const collapseBtn = document.getElementById("collapseBtn");
-  const sidebar = document.getElementById("sidebar");
+      // Move collapseBtn and sidebar logic into useEffect after DOM is updated
+      setTimeout(() => {
+        const collapseBtn = document.getElementById("collapseBtn");
+        const sidebar = document.getElementById("sidebar");
 
-  const handleCollapse = () => {
-    if (sidebar) {
-      sidebar.classList.toggle("collapsed");
+        const handleCollapse = () => {
+          if (sidebar) {
+        sidebar.classList.toggle("collapsed");
+          }
+        };
+
+        if (collapseBtn) {
+          collapseBtn.addEventListener("click", handleCollapse);
+        }
+
+        // Clean up event listener on unmount
+        return () => {
+          if (collapseBtn) {
+        collapseBtn.removeEventListener("click", handleCollapse);
+          }
+        };
+      }, 0);
+      } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    getDashboardData();
+
+    const collapseBtn = document.getElementById("collapseBtn");
+    const sidebar = document.getElementById("sidebar");
+
+    const handleCollapse = () => {
+      if (sidebar) {
+        sidebar.classList.toggle("collapsed");
+      }
+    };
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener("click", handleCollapse);
     }
-  };
 
-  if (collapseBtn) {
-    collapseBtn.addEventListener("click", handleCollapse);
+    return () => {
+      if (collapseBtn) {
+        collapseBtn.removeEventListener("click", handleCollapse);
+      }
+    };
+  }, []); // Empty dependency array to run once when the component mounts
+
+  if (!transactionData) {
+    return <div>Loading...</div>; // Show a loading state until the data is fetched
   }
 
-  return () => {
-    if (collapseBtn) {
-      collapseBtn.removeEventListener("click", handleCollapse);
-    }
-  };
-}, []);
 
 
   return (
@@ -63,8 +107,8 @@ useEffect(() => {
               </Link>
             </li>
             <li>
-              <Link to="/expense" className={`nav-btn ${isActive('/expense') ? 'active' : ''}`}>
-                <FontAwesomeIcon icon={faWallet} /> <span>Expense</span>
+              <Link to="/transaction" className={`nav-btn ${isActive('/transaction') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faWallet} /> <span>transaction</span>
               </Link>
             </li>
             <li>
@@ -103,7 +147,7 @@ useEffect(() => {
             <div className="title">Transactions</div>
             <div className="actions">
               <button className="income-btn">Income</button>
-              <button className="expense-btn">Expense</button>
+              <button className="transaction-btn">transaction</button>
               <FontAwesomeIcon icon={faBell} />
               <div className="profile">Sishir Shrestha</div>
             </div>
@@ -123,42 +167,30 @@ useEffect(() => {
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Description</th>
+                <th>Source</th>
                 <th>Category</th>
                 <th>Amount</th>
                 <th>Type</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>2025-05-01</td>
-                <td>Salary</td>
-                <td>Income</td>
-                <td className="amount income">+$3,000.00</td>
-                <td>Credit</td>
-              </tr>
-              <tr>
-                <td>2025-05-03</td>
-                <td>Groceries</td>
-                <td>Food</td>
-                <td className="amount expense">-$150.00</td>
-                <td>Debit</td>
-              </tr>
-              <tr>
-                <td>2025-05-05</td>
-                <td>Rent</td>
-                <td>Housing</td>
-                <td className="amount expense">-$900.00</td>
-                <td>Debit</td>
-              </tr>
-              <tr>
-                <td>2025-05-07</td>
-                <td>Freelance Project</td>
-                <td>Income</td>
-                <td className="amount income">+$800.00</td>
-                <td>Credit</td>
-              </tr>
-            </tbody>
+          <tbody>
+                              {transactionData.length > 0 ? (
+                                transactionData.map((transaction, index) => (
+                                  <tr key={index}>
+                                    <td>{transaction.createDate ? new Date(transaction.createDate).toISOString().slice(0, 10) : 'N/A'}</td>
+                                    <td>{transaction.category_name || 'N/A'}</td>
+                                     <td>{transaction.transactiontype || 'N/A'}</td>
+                                    <td>{transaction.amount ? `Rs  ${parseFloat(transaction.amount).toFixed(0)}` : 'N/A'}</td>
+                                    <td>{transaction.typed || 'N/A'}</td>
+                                    
+                                  </tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan={5}>No transaction records found.</td>
+                                </tr>
+                              )}
+                            </tbody>
           </table>
         </section>
       </main>

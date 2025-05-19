@@ -60,4 +60,15 @@ export const fetchExpenseTable = async () => {
     throw error;
   }
 };
-
+export const fetchTransactionTable = async () => {
+  try {
+    const userid = storage.get("userid");
+    const response = await axios.get(`${API_BASE_URL}/finance/transactiontable`, {
+      params: { userid },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching transaction table data:", error);
+    throw error;
+  }
+};
