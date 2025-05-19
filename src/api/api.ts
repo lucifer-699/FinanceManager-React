@@ -72,3 +72,15 @@ export const fetchTransactionTable = async () => {
     throw error;
   }
 };
+export const fetchPlanning = async () => {
+  try {
+    const userid = storage.get("userid");
+    const response = await axios.get(`${API_BASE_URL}/finance/planning`, {
+      params: { userid },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching planning data:", error);
+    throw error;
+  }
+};
