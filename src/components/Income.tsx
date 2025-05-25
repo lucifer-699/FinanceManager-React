@@ -144,8 +144,6 @@ const Income: React.FC = () => {
           <div className="topbar-content">
            <div className="title">Income</div>
            <div className="actions">
-                <button className="income-btn">Income</button>
-                <button className="expense-btn">Expense</button>
                     <FontAwesomeIcon icon={faBell} />
                 <div className="profile">Sishir Shrestha</div>
           </div>

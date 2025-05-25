@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/css/settings.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 const Income: React.FC = () => {
    const location = useLocation();
    const isActive = (path: string) => location.pathname === path;
-
+  const navigate = useNavigate();
 
 useEffect(() => {
   const collapseBtn = document.getElementById("collapseBtn");
@@ -100,8 +100,8 @@ useEffect(() => {
           <div className="topbar-content">
            <div className="title">Income</div>
            <div className="actions">
-                <button className="income-btn">Income</button>
-                <button className="expense-btn">Expense</button>
+               <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
+              <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
                     <FontAwesomeIcon icon={faBell} />
                 <div className="profile">Sishir Shrestha</div>
           </div>

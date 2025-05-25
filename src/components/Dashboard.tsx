@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+
 import { fetchDashboardData } from '../api/api'; // Import the API function
 import '../assets/css/dashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,7 +14,7 @@ const Dashboard: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
   const [dashboardData, setDashboardData] = useState<any>(null); // State to hold dashboard data 
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch the dashboard data when the component mounts
@@ -142,8 +143,8 @@ const Dashboard: React.FC = () => {
               <div className="topbar-content">
                 <div className="title">Dashboard</div>
                 <div className="actions">
-                  <button className="income-btn">Income</button>
-                  <button className="expense-btn">Expense</button>
+               <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
+              <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
                   <FontAwesomeIcon icon={faBell} />
                   <div className="profile">{dashboardData.firstname} {dashboardData.lastname}</div>
                 </div>

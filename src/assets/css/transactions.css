@@ -104,21 +104,18 @@ body, html {
   background: #ffffff;
   padding: 1rem 2rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  
 }
 
 .topbar-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 0%;
 }
 
 .actions {
   display: flex;
   gap: 1rem;
   align-items: center;
-  margin-top: -3px;
 }
 
 .income-btn,
@@ -130,31 +127,27 @@ body, html {
   cursor: pointer;
   border-radius: 5px;
 }
+
 .income-btn:hover {
-   transform: translateY(-4px);
-  transition: background-color 0.3s ease;;
+  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
  background-color: lightgreen;
   color: #065f46;;
 }
 .expense-btn:hover {
-  transform: translateY(-4px);
-  transition: background-color 0.3s ease;;
+  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
  background-color:  #ff6666;
   color: #065f46;;
 }
 .profile {
   font-weight: bold;
-    color: black;
 }
-
 
 /* Transaction Section */
 .transaction-section {
   padding: 1rem 2rem;
   flex-grow: 1;
- 
 }
 .transaction-header select {
     padding: 0.5rem;
@@ -163,6 +156,7 @@ body, html {
     background-color: white;
     color: black;
 }
+
 .transaction-header {
   display: flex;
   justify-content: space-between;

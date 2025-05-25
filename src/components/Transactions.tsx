@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/css/transactions.css';
 import { fetchTransactionTable } from '../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,7 +13,8 @@ const Transactions: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
 const [transactionData, settransactionData] = useState<any[]>([]);
-
+  const navigate = useNavigate();
+  
  useEffect(() => {
     // Fetch the dashboard data when the component mounts
     const getDashboardData = async () => {
@@ -146,8 +147,8 @@ const [transactionData, settransactionData] = useState<any[]>([]);
           <div className="topbar-content">
             <div className="title">Transactions</div>
             <div className="actions">
-              <button className="income-btn">Income</button>
-              <button className="transaction-btn">transaction</button>
+            <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
+              <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
               <FontAwesomeIcon icon={faBell} />
               <div className="profile">Sishir Shrestha</div>
             </div>
@@ -177,7 +178,7 @@ const [transactionData, settransactionData] = useState<any[]>([]);
                               {transactionData.length > 0 ? (
                                 transactionData.map((transaction, index) => (
                                   <tr key={index}>
-                                    <td>{transaction.createDate ? new Date(transaction.createDate).toISOString().slice(0, 10) : 'N/A'}</td>
+                                    <td>{transaction.createdate ? new Date(transaction.createdate).toISOString().slice(0, 10) : 'N/A'}</td>
                                     <td>{transaction.category_name || 'N/A'}</td>
                                      <td>{transaction.transactiontype || 'N/A'}</td>
                                     <td>{transaction.amount ? `Rs  ${parseFloat(transaction.amount).toFixed(0)}` : 'N/A'}</td>

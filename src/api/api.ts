@@ -84,3 +84,70 @@ export const fetchPlanning = async () => {
     throw error;
   }
 };
+export const fetchMonthlyIncomeExpenseSummary = async () => {
+  try {
+    const userid = storage.get("userid");
+    const response = await axios.get(`${API_BASE_URL}/analytics/monthly-income-expense`, {
+      params: { userid },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching monthly income/expense summary:", error);
+    throw error;
+  }
+};
+
+// 📁 src/api/api.ts
+
+export const fetchBudgetSummary = async () => {
+  try {
+    const userid = storage.get("userid");
+    const response = await axios.get(`${API_BASE_URL}/finance/budgetsummary`, {
+      params: { userid },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching budget summary:", error);
+    throw error;
+  }
+};
+
+export const fetchSpendingTrend = async () => {
+  try {
+    const userid = storage.get("userid");
+    const response = await axios.get(`${API_BASE_URL}/analytics/spending-trend`, {
+      params: { userid },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching spending trend data:", error);
+    throw error;
+  }
+};
+// Fetches monthly income vs expense
+export const fetchMonthlyIncomeExpense = async () => {
+  try {
+    const userid = storage.get("userid");
+    const response = await axios.get("http://localhost:8442/finance/incomeExpense", {
+      params: { userid },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching income/expense data:", error);
+    throw error;
+  }
+};
+
+// Fetches analytics by category (over/under spending)
+export const fetchAnalyticsCategory = async () => {
+  try {
+    const userid = storage.get("userid");
+    const response = await axios.get("http://localhost:8442/finance/analyticsCategory", {
+      params: { userid },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching analytics category data:", error);
+    throw error;
+  }
+};

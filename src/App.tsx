@@ -4,7 +4,7 @@ import Dashboard from './components/Dashboard.tsx';
 import Transactions from './components/Transactions.tsx';
 import Income from './components/Income.tsx';
 import Expense from './components/Expense.tsx';
-//import Planning from './components/Planning.tsx';
+import Planning from './components/Planning.tsx';
 import Analytics from './components/Analytics.tsx';
 //import Reports from './components/Reports.tsx';
 import Settings from './components/Settings.tsx';
@@ -21,6 +21,7 @@ const App: React.FC = () => {
         <Route path="/transactions" element={<Transactions />} />
        <Route path="/" element={<Login />} />
         <Route path="/analytics" element={<Analytics />} />
+          <Route path="/planning" element={<Planning />} />
      
       </Routes>
     </Router>
