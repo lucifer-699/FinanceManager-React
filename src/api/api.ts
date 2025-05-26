@@ -151,3 +151,52 @@ export const fetchAnalyticsCategory = async () => {
     throw error;
   }
 };
+
+// Fetch all categories (only 'Income' type will be used in UI)
+export const fetchCategories = async () => {
+  try {
+    const response = await axios.get("http://localhost:8442/finance/categoryid");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
+// Fetch transaction types based on selected category
+export const fetchTransactionTypes = async (categoryid: string) => {
+  try {
+    const response =  await axios.get("http://localhost:8442/finance/mapid", {
+      params: { categoryid },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching transaction types:", error);
+    throw error;
+  }
+};
+
+// Submit new income transaction
+export const insertIncomeTransaction = async (
+  userid: string,
+  categoryid: string,
+  transaction_type: string,
+  mapid: string,
+  amount: string
+) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/insert`, null, {
+      params: {
+        userid,
+        categoryid,
+        transaction_type,
+        mapid,
+        amount,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error inserting income transaction:", error);
+    throw error;
+  }
+};

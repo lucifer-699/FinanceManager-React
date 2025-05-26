@@ -1,59 +1,69 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { fetchIncomeTable } from '../api/api';
+import Modal from 'react-modal';
+import {
+  fetchIncomeTable,
+  fetchCategories,
+  fetchTransactionTypes,
+  insertIncomeTransaction,
+} from '../api/api';
+import { storage } from "../storage";
+
 import '../assets/css/income.css';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faFileAlt, faCog,
-  faSignOutAlt,faPlus,faEdit,faTrashAlt,faBell
-} from '@fortawesome/free-solid-svg-icons'; // assuming global or modular styles
+  faSignOutAlt, faPlus, faEdit, faTrashAlt, faBell
+} from '@fortawesome/free-solid-svg-icons';
+
+Modal.setAppElement('#root'); // required for accessibility
 
 const Income: React.FC = () => {
-   const location = useLocation();
-   const isActive = (path: string) => location.pathname === path;
+  const location = useLocation();
+  const isActive = (path: string) => location.pathname === path;
+
   const [incomeData, setIncomeData] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [transactionTypes, setTransactionTypes] = useState<any[]>([]);
+  const [selectedTransaction, setSelectedTransaction] = useState('');
+  const [mapId, setMapId] = useState('');
+  const [amount, setAmount] = useState('');
 
- useEffect(() => {
-    // Fetch the dashboard data when the component mounts
+  // Fetch income data
+  useEffect(() => {
     const getDashboardData = async () => {
       try {
-      const data = await fetchIncomeTable();
-      if (Array.isArray(data)) {
-        setIncomeData(data); // If data is already an array, use it directly
-      } else {
-        setIncomeData([]); // fallback: ensure it's always an array
-      }
-
-      // Move collapseBtn and sidebar logic into useEffect after DOM is updated
-      setTimeout(() => {
-        const collapseBtn = document.getElementById("collapseBtn");
-        const sidebar = document.getElementById("sidebar");
-
-        const handleCollapse = () => {
-          if (sidebar) {
-        sidebar.classList.toggle("collapsed");
-          }
-        };
-
-        if (collapseBtn) {
-          collapseBtn.addEventListener("click", handleCollapse);
-        }
-
-        // Clean up event listener on unmount
-        return () => {
-          if (collapseBtn) {
-        collapseBtn.removeEventListener("click", handleCollapse);
-          }
-        };
-      }, 0);
+        const data = await fetchIncomeTable();
+        setIncomeData(Array.isArray(data) ? data : []);
       } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+        console.error("Error fetching income data:", error);
       }
     };
 
     getDashboardData();
+
+    // Fetch categories for the modal
+    const getCategories = async () => {
+      try {
+        const data = await fetchCategories();
+        if (Array.isArray(data)) {
+          const incomeCats = data.filter((c: any) => c.category_type === "Income");
+          setCategories(incomeCats);
+        } else {
+          setCategories([]);
+          console.error("Fetched categories data is not an array:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    getCategories();
 
     const collapseBtn = document.getElementById("collapseBtn");
     const sidebar = document.getElementById("sidebar");
@@ -73,15 +83,35 @@ const Income: React.FC = () => {
         collapseBtn.removeEventListener("click", handleCollapse);
       }
     };
-  }, []); // Empty dependency array to run once when the component mounts
+  }, []);
 
-  if (!incomeData) {
-    return <div>Loading...</div>; // Show a loading state until the data is fetched
-  }
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const userid = storage.get("userid");
+    try {
+      const success = await insertIncomeTransaction(
+        userid,
+        selectedCategory,
+        selectedTransaction,
+        mapId,
+        amount
+      );
+      if (success) {
+        alert("Income added successfully!");
+        setIsModalOpen(false);
+        window.location.reload();
+      } else {
+        alert("Failed to add income.");
+      }
+    } catch (error) {
+      alert("Error submitting income.");
+      console.error(error);
+    }
+  };
 
   return (
-   <div className="container">
+    <div className="container">
+      {/* Sidebar */}
       <aside className="sidebar" id="sidebar">
         <div className="sidebar-header">
           <button className="collapse-btn" id="collapseBtn">
@@ -139,20 +169,23 @@ const Income: React.FC = () => {
         </nav>
       </aside>
 
+      {/* Main */}
       <main className="dashboard">
         <header className="topbar">
           <div className="topbar-content">
-           <div className="title">Income</div>
-           <div className="actions">
-                    <FontAwesomeIcon icon={faBell} />
-                <div className="profile">Sishir Shrestha</div>
-          </div>
+            <div className="title">Income</div>
+            <div className="actions">
+              <FontAwesomeIcon icon={faBell} />
+              <div className="profile">Sishir Shrestha</div>
+            </div>
           </div>
         </header>
 
         <section className="section-header">
           <h2>Income Overview</h2>
-          <button className="addbtn"><FontAwesomeIcon icon={faPlus}/> Add Income</button>
+          <button className="addbtn" onClick={() => setIsModalOpen(true)}>
+            <FontAwesomeIcon icon={faPlus} /> Add Income
+          </button>
         </section>
 
         <section className="table-section">
@@ -166,13 +199,13 @@ const Income: React.FC = () => {
                 <th>Actions</th>
               </tr>
             </thead>
-           <tbody>
+            <tbody>
               {incomeData.length > 0 ? (
                 incomeData.map((income, index) => (
                   <tr key={index}>
                     <td>{income.createDate ? new Date(income.createDate).toISOString().slice(0, 10) : 'N/A'}</td>
                     <td>{income.categoryName || 'N/A'}</td>
-                    <td>{income.amount ? `Rs  ${parseFloat(income.amount).toFixed(0)}` : 'N/A'}</td>
+                    <td>{income.amount ? `Rs ${parseFloat(income.amount).toFixed(0)}` : 'N/A'}</td>
                     <td>{income.categoryType || 'N/A'}</td>
                     <td>
                       <button className="edit-btn"><FontAwesomeIcon icon={faEdit} /></button>
@@ -186,10 +219,73 @@ const Income: React.FC = () => {
                 </tr>
               )}
             </tbody>
-
           </table>
         </section>
       </main>
+
+      {/* Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Add Income"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <h2>Add New Income</h2>
+        <form onSubmit={handleSubmit}>
+          <label>Category</label>
+          <select
+            value={selectedCategory}
+            onChange={async (e) => {
+              const categoryId = e.target.value;
+              setSelectedCategory(categoryId);
+              setSelectedTransaction('');
+              setTransactionTypes([]);
+              const types = await fetchTransactionTypes(categoryId);
+              setTransactionTypes(types as any[]);
+            }}
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat.categoryid} value={cat.categoryid}>
+                {cat.category_name}
+              </option>
+            ))}
+          </select>
+
+          <label>Transaction Type</label>
+          <select
+            value={selectedTransaction}
+            onChange={(e) => {
+              const selectedMap = transactionTypes.find((t) => t.transactiontype === e.target.value);
+              setSelectedTransaction(e.target.value);
+              setMapId(selectedMap?.mapid || '');
+            }}
+            required
+          >
+            <option value="">Select Type</option>
+            {transactionTypes.map((type) => (
+              <option key={type.mapid} value={type.transactiontype}>
+                {type.transactiontype}
+              </option>
+            ))}
+          </select>
+
+          <label>Amount</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+          />
+
+          <div className="modal-actions">
+            <button type="submit">Submit</button>
+            <button type="button" onClick={() => setIsModalOpen(false)}>Cancel</button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };
