@@ -24,6 +24,7 @@ const Expense: React.FC = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [transactionTypes, setTransactionTypes] = useState<any[]>([]);
   const [selectedTransaction, setSelectedTransaction] = useState('');
+  const [mapId, setMapId] = useState('');
   const [amount, setAmount] = useState('');
 
   useEffect(() => {
