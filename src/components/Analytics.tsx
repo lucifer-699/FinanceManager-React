@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer
@@ -14,7 +14,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faCog,
-  faSignOutAlt, faBell
+  faSignOutAlt, faBell,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 import '../assets/css/analytics.css';
 
@@ -67,6 +68,10 @@ const Analytics: React.FC = () => {
     }, []);
 
     
+  function isActive(path: string) {
+    return window.location.pathname === path;
+  }
+
   return (
     <div className="container">
       <aside className="sidebar" id="sidebar">
@@ -75,16 +80,53 @@ const Analytics: React.FC = () => {
             <FontAwesomeIcon icon={faBars} />
           </button>
         </div>
-        <nav id="navMenu">
+           <nav id="navMenu">
           <ul>
-            <li><a href="/dashboard" className="nav-btn"><FontAwesomeIcon icon={faTachometerAlt} /> <span>Dashboard</span></a></li>
-            <li><a href="/transactions" className="nav-btn"><FontAwesomeIcon icon={faExchangeAlt} /> <span>Transactions</span></a></li>
-            <li><a href="/income" className="nav-btn"><FontAwesomeIcon icon={faWallet} /> <span>Income</span></a></li>
-            <li><a href="/expense" className="nav-btn"><FontAwesomeIcon icon={faWallet} /> <span>Expense</span></a></li>
-            <li><a href="/planning" className="nav-btn"><FontAwesomeIcon icon={faCalendarAlt} /> <span>Planning</span></a></li>
-            <li><a href="/analytics" className="nav-btn active"><FontAwesomeIcon icon={faChartLine} /> <span>Analytics</span></a></li>
-            <li><a href="/settings" className="nav-btn"><FontAwesomeIcon icon={faCog} /> <span>Settings</span></a></li>
-            <li><a href="/" className="logout-btn"><FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span></a></li>
+            <li>
+              <Link to="/dashboard" className={`nav-btn ${isActive('/dashboard') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faTachometerAlt} /> <span>Dashboard</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/transactions" className={`nav-btn ${isActive('/transactions') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faExchangeAlt} /> <span>Transactions</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/income" className={`nav-btn ${isActive('/income') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faWallet} /> <span>Income</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/expense" className={`nav-btn ${isActive('/expense') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faWallet} /> <span>Expense</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/planning" className={`nav-btn ${isActive('/planning') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faCalendarAlt} /> <span>Planning</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/analytics" className={`nav-btn ${isActive('/analytics') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faChartLine} /> <span>Analytics</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faCog} /> <span>Settings</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/admin" className={`nav-btn ${isActive('/admin') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faUser} /> <span>Admin</span>
+             </Link>
+            </li>
+            <li>
+              <Link to="/" className="logout-btn">
+                <FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span>
+              </Link>
+            </li>
           </ul>
         </nav>
       </aside>

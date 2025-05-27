@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faCog,
-  faSignOutAlt, faBell, faPiggyBank
+  faSignOutAlt, faBell, faPiggyBank,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 
 const Dashboard: React.FC = () => {
@@ -124,6 +125,11 @@ const Dashboard: React.FC = () => {
             <li>
               <Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faCog} /> <span>Settings</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/admin" className={`nav-btn ${isActive('/admin') ? 'active' : ''}`}>
+                 <FontAwesomeIcon icon={faUser} /> <span>Admin</span>
               </Link>
             </li>
             <li>

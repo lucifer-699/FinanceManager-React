@@ -7,6 +7,7 @@ import {
   faCalendarAlt, faChartLine, faCog,
   faSignOutAlt, faBell
 } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 
 const Income: React.FC = () => {
   const location = useLocation();
@@ -107,6 +108,11 @@ const Income: React.FC = () => {
                 <FontAwesomeIcon icon={faCog} /> <span>Settings</span>
               </Link>
             </li>
+               <li>
+                                <Link to="/admin" className={`nav-btn ${isActive('/admin') ? 'active' : ''}`}>
+                                  <FontAwesomeIcon icon={faUser} /> <span>Admin</span>
+                                </Link>
+                               </li>
             <li>
               <Link to="/" className="logout-btn">
                 <FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span>

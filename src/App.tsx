@@ -6,7 +6,7 @@ import Income from './components/Income.tsx';
 import Expense from './components/Expense.tsx';
 import Planning from './components/Planning.tsx';
 import Analytics from './components/Analytics.tsx';
-//import Reports from './components/Reports.tsx';
+import Admin from './components/Admin.tsx';
 import Settings from './components/Settings.tsx';
 import Login from './components/Login.tsx';
 
@@ -22,6 +22,7 @@ const App: React.FC = () => {
        <Route path="/" element={<Login />} />
         <Route path="/analytics" element={<Analytics />} />
           <Route path="/planning" element={<Planning />} />
+        <Route path="/admin" element={<Admin />} />
      
       </Routes>
     </Router>

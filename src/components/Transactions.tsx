@@ -6,7 +6,8 @@ import { fetchTransactionTable } from '../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
-  faCalendarAlt, faChartLine, faCog, faSignOutAlt, faBell
+  faCalendarAlt, faChartLine, faCog, faSignOutAlt, faBell,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 
 const Transactions: React.FC = () => {
@@ -89,8 +90,8 @@ const Transactions: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link to="/transaction" className={`nav-btn ${isActive('/transaction') ? 'active' : ''}`}>
-                <FontAwesomeIcon icon={faWallet} /> <span>transaction</span>
+              <Link to="/expense" className={`nav-btn ${isActive('/expense') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faWallet} /> <span>Expense</span>
               </Link>
             </li>
             <li>
@@ -106,6 +107,11 @@ const Transactions: React.FC = () => {
             <li>
               <Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faCog} /> <span>Settings</span>
+              </Link>
+            </li>
+                <li>
+              <Link to="/admin" className={`nav-btn ${isActive('/admin') ? 'active' : ''}`}>
+                <FontAwesomeIcon icon={faUser} /> <span>Admin</span>
               </Link>
             </li>
             <li>

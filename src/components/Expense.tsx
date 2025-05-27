@@ -16,7 +16,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faCog,
-  faSignOutAlt, faPlus, faEdit, faTrashAlt, faBell
+  faSignOutAlt, faPlus, faEdit, faTrashAlt, faBell,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 
 Modal.setAppElement('#root'); // for accessibility
@@ -149,19 +150,56 @@ const Expense: React.FC = () => {
             <FontAwesomeIcon icon={faBars} />
           </button>
         </div>
-        <nav id="navMenu">
-          <ul>
-            <li><Link to="/dashboard" className={`nav-btn ${isActive('/dashboard') ? 'active' : ''}`}><FontAwesomeIcon icon={faTachometerAlt} /> <span>Dashboard</span></Link></li>
-            <li><Link to="/transactions" className={`nav-btn ${isActive('/transactions') ? 'active' : ''}`}><FontAwesomeIcon icon={faExchangeAlt} /> <span>Transactions</span></Link></li>
-            <li><Link to="/income" className={`nav-btn ${isActive('/income') ? 'active' : ''}`}><FontAwesomeIcon icon={faWallet} /> <span>Income</span></Link></li>
-            <li><Link to="/expense" className={`nav-btn ${isActive('/expense') ? 'active' : ''}`}><FontAwesomeIcon icon={faWallet} /> <span>Expense</span></Link></li>
-            <li><Link to="/planning" className={`nav-btn ${isActive('/planning') ? 'active' : ''}`}><FontAwesomeIcon icon={faCalendarAlt} /> <span>Planning</span></Link></li>
-            <li><Link to="/analytics" className={`nav-btn ${isActive('/analytics') ? 'active' : ''}`}><FontAwesomeIcon icon={faChartLine} /> <span>Analytics</span></Link></li>
-            <li><Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}><FontAwesomeIcon icon={faCog} /> <span>Settings</span></Link></li>
-            <li><Link to="/" className="logout-btn"><FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span></Link></li>
-          </ul>
-        </nav>
-      </aside>
+         <nav id="navMenu">
+                 <ul>
+                   <li>
+                     <Link to="/dashboard" className={`nav-btn ${isActive('/dashboard') ? 'active' : ''}`}>
+                       <FontAwesomeIcon icon={faTachometerAlt} /> <span>Dashboard</span>
+                     </Link>
+                   </li>
+                   <li>
+                     <Link to="/transactions" className={`nav-btn ${isActive('/transactions') ? 'active' : ''}`}>
+                       <FontAwesomeIcon icon={faExchangeAlt} /> <span>Transactions</span>
+                     </Link>
+                   </li>
+                   <li>
+                     <Link to="/income" className={`nav-btn ${isActive('/income') ? 'active' : ''}`}>
+                       <FontAwesomeIcon icon={faWallet} /> <span>Income</span>
+                     </Link>
+                   </li>
+                   <li>
+                     <Link to="/expense" className={`nav-btn ${isActive('/expense') ? 'active' : ''}`}>
+                       <FontAwesomeIcon icon={faWallet} /> <span>Expense</span>
+                     </Link>
+                   </li>
+                   <li>
+                     <Link to="/planning" className={`nav-btn ${isActive('/planning') ? 'active' : ''}`}>
+                       <FontAwesomeIcon icon={faCalendarAlt} /> <span>Planning</span>
+                     </Link>
+                   </li>
+                   <li>
+                     <Link to="/analytics" className={`nav-btn ${isActive('/analytics') ? 'active' : ''}`}>
+                       <FontAwesomeIcon icon={faChartLine} /> <span>Analytics</span>
+                     </Link>
+                   </li>
+                   <li>
+                     <Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}>
+                       <FontAwesomeIcon icon={faCog} /> <span>Settings</span>
+                     </Link>
+                   </li>
+                   <li>
+                     <Link to="/admin" className={`nav-btn ${isActive('/admin') ? 'active' : ''}`}>
+                       <FontAwesomeIcon icon={faUser} /> <span>Admin</span>
+                     </Link>
+                   </li>
+                   <li>
+                     <Link to="/" className="logout-btn">
+                       <FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span>
+                     </Link>
+                   </li>
+                 </ul>
+               </nav>
+             </aside>
 
       {/* Main */}
       <main className="dashboard">

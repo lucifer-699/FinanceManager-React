@@ -16,7 +16,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faCog,
-  faSignOutAlt, faPlus, faEdit, faTrashAlt, faBell
+  faSignOutAlt, faPlus, faEdit, faTrashAlt, faBell,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 
 Modal.setAppElement('#root');
@@ -181,6 +182,11 @@ const Income: React.FC = () => {
                 <FontAwesomeIcon icon={faCog} /> <span>Settings</span>
               </Link>
             </li>
+              <li>
+                          <Link to="/admin" className={`nav-btn ${isActive('/admin') ? 'active' : ''}`}>
+                            <FontAwesomeIcon icon={faUser} /> <span>Admin</span>
+                         </Link>
+                        </li>
             <li>
               <Link to="/" className="logout-btn">
                 <FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span>

@@ -254,3 +254,42 @@ export const insertBudgetPlan = async (
   }
 };
 
+// Insert a new category
+export const insertCategory = async (
+  categoryName: string,
+  categoryType: string
+) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/finance/insertcategory`, null, {
+      params: {
+        categoryName,
+        categoryType,
+      },
+    });
+    return response.data; // returns a boolean
+  } catch (error) {
+    console.error("Error inserting category:", error);
+    throw error;
+  }
+};
+
+// Insert a new category mapping
+export const insertCategoryMapping = async (
+  categoryid: string,
+  categoryType: string,
+  transactionType: string
+) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/finance/insertcategoryMapping`, null, {
+      params: {
+        categoryid,
+        categoryType,
+        transactionType,
+      },
+    });
+    return response.data; // returns a boolean
+  } catch (error) {
+    console.error("Error inserting category mapping:", error);
+    throw error;
+  }
+};
