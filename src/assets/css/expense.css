@@ -295,6 +295,27 @@ body, html {
   background-color: #FF4C4C; /* red */
 }
 
+
+.submit-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background-color: rgb(73, 185, 73);
+}
+.cancel-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background-color: #e2e8f0;
+  color: #1e293b;
+  background-color:#ef4444 ;
+}
 @keyframes fadein {
   from {opacity: 0;}
   to {opacity: 0.9;}
@@ -304,8 +325,20 @@ body, html {
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-right: -52%;
+  margin-right: -54%;
   vertical-align: middle;
   cursor: pointer;
   transition: border-color 0.3s ease;
+  margin-left: -2%;
+}
+
+.section-header input[type="month"]:focus {
+  outline: none;
+  border-color: #007bff; /* blue focus */
+  box-shadow: 0 0 3px #007bff;
+}
+
+/* Adjust button vertical alignment with input */
+.section-header .addbtn {
+  vertical-align: middle;
 }

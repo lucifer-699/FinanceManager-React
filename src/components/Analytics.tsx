@@ -44,6 +44,29 @@ const Analytics: React.FC = () => {
     savings: parseFloat(item.totalincome) - parseFloat(item.totalexpense),
   }));
 
+
+  useEffect(() => {
+      const collapseBtn = document.getElementById("collapseBtn");
+      const sidebar = document.getElementById("sidebar");
+  
+      const handleCollapse = () => {
+        if (sidebar) {
+          sidebar.classList.toggle("collapsed");
+        }
+      };
+  
+      if (collapseBtn) {
+        collapseBtn.addEventListener("click", handleCollapse);
+      }
+  
+      return () => {
+        if (collapseBtn) {
+          collapseBtn.removeEventListener("click", handleCollapse);
+        }
+      };
+    }, []);
+
+    
   return (
     <div className="container">
       <aside className="sidebar" id="sidebar">

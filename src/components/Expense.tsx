@@ -278,8 +278,10 @@ const Expense: React.FC = () => {
             required
           />
 
-          <button type="submit" className="submit-btn">Submit</button>
-          <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
+          <div className="modal-actions">
+            <button type="submit">Submit</button>
+            <button type="button" onClick={() => setIsModalOpen(false)}>Cancel</button>
+          </div>
         </form>
       </Modal>
 

@@ -35,6 +35,10 @@ body, html {
 
 .sidebar.collapsed {
   width: 55px;
+  
+}
+.sidebar.collapsed .collapse-btn {
+  margin-left: -12%;
 }
 
 .sidebar-header {
@@ -182,7 +186,7 @@ body, html {
     font-size: 1.5rem;
     color: black;
     margin-left: 51%;
-    margin-top: -33%;
+    margin-top: -38%;
 }
 .title{
   text-align: center;

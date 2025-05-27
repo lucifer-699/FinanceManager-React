@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -65,7 +66,9 @@ const Planning: React.FC = () => {
   const loadCategories = async () => {
     try {
       const data = await fetchCategories();
-      setCategories(Array.isArray(data) ? data : []);
+      // Only include categories where category_type === 'Expense'
+      const filtered = Array.isArray(data) ? data.filter((c: any) => c.category_type === 'Expense') : [];
+      setCategories(Array.isArray(filtered) ? filtered : []);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }

@@ -1,43 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/css/settings.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
-  faCalendarAlt, faChartLine,  faCog,
-  faSignOutAlt,faBell
-} from '@fortawesome/free-solid-svg-icons'; // assuming global or modular styles
-import { useEffect } from 'react';
+  faCalendarAlt, faChartLine, faCog,
+  faSignOutAlt, faBell
+} from '@fortawesome/free-solid-svg-icons';
 
 const Income: React.FC = () => {
-   const location = useLocation();
-   const isActive = (path: string) => location.pathname === path;
+  const location = useLocation();
   const navigate = useNavigate();
 
-useEffect(() => {
-  const collapseBtn = document.getElementById("collapseBtn");
-  const sidebar = document.getElementById("sidebar");
+  const [theme, setTheme] = useState('light');         // Current applied theme
+  const [selectedTheme, setSelectedTheme] = useState('light'); // Dropdown value
 
-  const handleCollapse = () => {
-    if (sidebar) {
-      sidebar.classList.toggle("collapsed");
+  const isActive = (path: string) => location.pathname === path;
+
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+    setSelectedTheme(savedTheme);
+  }, []);
+
+  // Apply theme class to root element
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark-mode');
+    } else {
+      root.classList.remove('dark-mode');
     }
-  };
+  }, [theme]);
 
-  if (collapseBtn) {
-    collapseBtn.addEventListener("click", handleCollapse);
-  }
+  // Sidebar collapse logic
+  useEffect(() => {
+    const collapseBtn = document.getElementById("collapseBtn");
+    const sidebar = document.getElementById("sidebar");
 
-  return () => {
+    const handleCollapse = () => {
+      if (sidebar) {
+        sidebar.classList.toggle("collapsed");
+      }
+    };
+
     if (collapseBtn) {
-      collapseBtn.removeEventListener("click", handleCollapse);
+      collapseBtn.addEventListener("click", handleCollapse);
     }
-  };
-}, []);
 
+    return () => {
+      if (collapseBtn) {
+        collapseBtn.removeEventListener("click", handleCollapse);
+      }
+    };
+  }, []);
+
+  const handleSavePreferences = () => {
+    setTheme(selectedTheme);
+    localStorage.setItem('theme', selectedTheme);
+    alert(`Preferences saved with ${selectedTheme} mode!`);
+  };
 
   return (
-   <div className="container">
+    <div className={`container ${theme === 'dark' ? 'dark-mode' : ''}`}>
       <aside className="sidebar" id="sidebar">
         <div className="sidebar-header">
           <button className="collapse-btn" id="collapseBtn">
@@ -93,80 +119,78 @@ useEffect(() => {
       <main className="dashboard">
         <header className="topbar">
           <div className="topbar-content">
-           <div className="title">Income</div>
-           <div className="actions">
-               <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
+            <div className="title">Income</div>
+            <div className="actions">
+              <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
               <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
-                    <FontAwesomeIcon icon={faBell} />
-                <div className="profile">Sishir Shrestha</div>
-          </div>
+              <FontAwesomeIcon icon={faBell} />
+              <div className="profile">Sishir Shrestha</div>
+            </div>
           </div>
         </header>
 
-     
-      <section className="settings">
-        <h2>Settings</h2>
-        <div className="settings-section">
-          <h3>Profile Information</h3>
-          <form>
-            <label>
-              Full Name:
-              <input type="text" placeholder="Sishir Shrestha" />
-            </label>
-            <label>
-              Email:
-              <input type="email" placeholder="john@example.com" />
-            </label>
-            <label>
-              Phone:
-              <input type="tel" placeholder="+1234567890" />
-            </label>
-            <button type="submit">Save Profile</button>
-          </form>
-        </div>
+        <section className="settings">
+          <h2>Settings</h2>
 
-        <div className="settings-section">
-          <h3>Change Password</h3>
-          <form>
-            <label>
-              Current Password:
-              <input type="password" />
-            </label>
-            <label>
-              New Password:
-              <input type="password" />
-            </label>
-            <label>
-              Confirm New Password:
-              <input type="password" />
-            </label>
-            <button type="submit">Update Password</button>
-          </form>
-        </div>
+          <div className="settings-section">
+            <h3>Profile Information</h3>
+            <form>
+              <label>
+                Full Name:
+                <input type="text" placeholder="Sishir Shrestha" />
+              </label>
+              <label>
+                Email:
+                <input type="email" placeholder="john@example.com" />
+              </label>
+              <label>
+                Phone:
+                <input type="tel" placeholder="+1234567890" />
+              </label>
+              <button type="submit">Save Profile</button>
+            </form>
+          </div>
 
-            <div className="settings-section">
+          <div className="settings-section">
+            <h3>Change Password</h3>
+            <form>
+              <label>
+                Current Password:
+                <input type="password" />
+              </label>
+              <label>
+                New Password:
+                <input type="password" />
+              </label>
+              <label>
+                Confirm New Password:
+                <input type="password" />
+              </label>
+              <button type="submit">Update Password</button>
+            </form>
+          </div>
+
+          <div className="settings-section">
             <h3>Preferences</h3>
-
             <label className="checkbox-container">
-                <input type="checkbox" />
-                <span className="checkbox-label">Enable Notifications</span>
-                <span className="checkmark"></span>
+              <input type="checkbox" />
+              <span className="checkbox-label">Enable Notifications</span>
+              <span className="checkmark"></span>
             </label>
 
             <label>
-                Theme:
-                <select>
+              Theme:
+              <select value={selectedTheme} onChange={(e) => setSelectedTheme(e.target.value)}>
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
-                </select>
+              </select>
             </label>
 
-            <button>Save Preferences</button>
-            </div>
-
-      </section>
-    </main>
-  </div>
+            <button type="button" onClick={handleSavePreferences}>Save Preferences</button>
+          </div>
+        </section>
+      </main>
+    </div>
   );
 };
 

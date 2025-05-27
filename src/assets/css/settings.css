@@ -44,6 +44,7 @@ body, html {
   padding: 1rem;
   background-color: #1e293b;
   border-bottom: 1px solid #334155;
+      margin-left: 10%;
 }
 
 .logo {
@@ -57,6 +58,9 @@ body, html {
   color: white;
   font-size: 1.2rem;
   cursor: pointer;
+}
+.sidebar.collapsed .collapse-btn {
+  margin-left: -12%;
 }
 
 /* Navigation */
@@ -83,6 +87,7 @@ body, html {
 
 .sidebar.collapsed .nav-btn span {
   display: none;
+
 }
 
 .sidebar nav ul {
@@ -279,15 +284,16 @@ body, html {
 
 /* Custom checkmark box */
 .checkbox-container .checkmark {
-  position: absolute;
-  left: 0;
-  top: 3px;
-  height: 20px;
-  width: 20px;
-  background-color: rgb(223, 221, 221);
-  border-radius: 4px;
-  transition: background-color 0.3s;
-  margin-left: 14%;
+    position: absolute;
+    left: 0;
+    top: 3px;
+    height: 20px;
+    width: 20px;
+    background-color: rgb(223, 221, 221);
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    margin-left: 16%;
+    margin-top: -5px;
 }
 
 /* When checkbox is checked */
@@ -331,3 +337,13 @@ body, html {
   color: black;
   font-weight: 300;
 }
+/* Dark mode overall style */
+.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Do NOT override button colors unless needed */
+
+
+
