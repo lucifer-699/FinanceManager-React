@@ -4,7 +4,7 @@ import '../assets/css/settings.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
-  faCalendarAlt, faChartLine, faFileAlt, faCog,
+  faCalendarAlt, faChartLine,  faCog,
   faSignOutAlt,faBell
 } from '@fortawesome/free-solid-svg-icons'; // assuming global or modular styles
 import { useEffect } from 'react';
@@ -74,11 +74,6 @@ useEffect(() => {
             <li>
               <Link to="/analytics" className={`nav-btn ${isActive('/analytics') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faChartLine} /> <span>Analytics</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/reports" className={`nav-btn ${isActive('/reports') ? 'active' : ''}`}>
-                <FontAwesomeIcon icon={faFileAlt} /> <span>Reports</span>
               </Link>
             </li>
             <li>

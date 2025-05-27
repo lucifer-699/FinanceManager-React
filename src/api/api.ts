@@ -36,11 +36,11 @@ export const fetchDashboardData = async () => {
 
 
 // ✅ New function to fetch income table data
-export const fetchIncomeTable = async () => {
+export const fetchIncomeTable = async (month: string) => {
   try {
     const userid = storage.get("userid");
     const response = await axios.get(`${API_BASE_URL}/finance/incometable`, {
-      params: { userid },
+      params: { userid, month },
     });
     return response.data;
   } catch (error) {
@@ -48,11 +48,12 @@ export const fetchIncomeTable = async () => {
     throw error;
   }
 };
-export const fetchExpenseTable = async () => {
+
+export const fetchExpenseTable = async (month: string) => {
   try {
     const userid = storage.get("userid");
     const response = await axios.get(`${API_BASE_URL}/finance/expensetable`, {
-      params: { userid },
+      params: { userid, month },
     });
     return response.data;
   } catch (error) {
@@ -60,11 +61,15 @@ export const fetchExpenseTable = async () => {
     throw error;
   }
 };
-export const fetchTransactionTable = async () => {
+
+export const fetchTransactionTable = async (month: string) => {
   try {
     const userid = storage.get("userid");
     const response = await axios.get(`${API_BASE_URL}/finance/transactiontable`, {
-      params: { userid },
+      params: {
+        userid,
+        month, // Send the month as a query parameter (e.g., '2025-05')
+      },
     });
     return response.data;
   } catch (error) {
@@ -72,6 +77,7 @@ export const fetchTransactionTable = async () => {
     throw error;
   }
 };
+
 export const fetchPlanning = async () => {
   try {
     const userid = storage.get("userid");
@@ -185,7 +191,7 @@ export const insertIncomeTransaction = async (
   amount: string
 ) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/insert`, null, {
+    const response = await axios.post(`${API_BASE_URL}/finance/insertinex`, null, {
       params: {
         userid,
         categoryid,
@@ -200,3 +206,51 @@ export const insertIncomeTransaction = async (
     throw error;
   }
 };
+
+//submit expense transaction
+export const insertExpenseTransaction = async (
+  userid: string,
+  categoryid: string,
+  transaction_type: string,
+  mapid: string,
+  amount: string
+) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/finance/insertinex`, null, {
+      params: {
+        userid,
+        categoryid,
+        transaction_type,
+        mapid,
+        amount,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error inserting income transaction:", error);
+    throw error;
+  }
+};
+// Submit new budget plan
+export const insertBudgetPlan = async (
+  userid: string,
+  categoryid: string,
+  mapid: string,
+  amount: string
+) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/finance/insertplan`, null, {
+      params: {
+        userid,
+        categoryid,
+        mapid,
+        amount,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error inserting budget plan:", error);
+    throw error;
+  }
+};
+

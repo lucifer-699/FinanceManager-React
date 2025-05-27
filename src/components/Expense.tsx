@@ -1,18 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import Modal from 'react-modal';
+import {
+  fetchExpenseTable,
+  fetchCategories,
+  fetchTransactionTypes,
+  insertExpenseTransaction,
+} from '../api/api';
+import { storage } from "../storage";
+
+import '../assets/css/expense.css';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
-  faCalendarAlt, faChartLine, faFileAlt, faCog,
+  faCalendarAlt, faChartLine, faCog,
   faSignOutAlt, faPlus, faEdit, faTrashAlt, faBell
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Modal from 'react-modal';
-import { fetchExpenseTable } from '../api/api';
-import axios from 'axios';
-import '../assets/css/expense.css';
-import { storage } from '../storage';
 
-Modal.setAppElement('#root');
+Modal.setAppElement('#root'); // for accessibility
 
 const Expense: React.FC = () => {
   const location = useLocation();
@@ -21,125 +28,142 @@ const Expense: React.FC = () => {
   const [expenseData, setExpenseData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [transactionTypes, setTransactionTypes] = useState<any[]>([]);
   const [selectedTransaction, setSelectedTransaction] = useState('');
   const [mapId, setMapId] = useState('');
   const [amount, setAmount] = useState('');
 
-  useEffect(() => {
-    const loadExpenses = async () => {
-      try {
-        const data = await fetchExpenseTable();
-        setExpenseData(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error('Error fetching expense data:', error);
-      }
-    };
-    loadExpenses();
+  // Month dropdown options for current year
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
 
-    const collapseBtn = document.getElementById('collapseBtn');
-    const sidebar = document.getElementById('sidebar');
+  const monthOptions = Array.from({ length: 12 }, (_, i) => {
+    const monthNum = String(i + 1).padStart(2, '0');
+    return `${currentYear}-${monthNum}`;
+  });
 
-    const handleCollapse = () => {
-      if (sidebar) sidebar.classList.toggle('collapsed');
-    };
+  // Month filter state, default to current month YYYY-MM
+  const [month, setMonth] = useState(() => {
+    const now = new Date();
+    return now.toISOString().slice(0, 7);
+  });
 
-    if (collapseBtn) collapseBtn.addEventListener('click', handleCollapse);
-    return () => {
-      if (collapseBtn) collapseBtn.removeEventListener('click', handleCollapse);
-    };
-  }, []);
+  // Toast state
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-  const handleCategoryChange = async (categoryId: string) => {
-    setSelectedCategoryId(categoryId);
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
+
+  const getExpenseData = async (filterMonth: string) => {
     try {
-      const response = await axios.get('http://localhost:8442/finance/mapid', {
-        params: { categoryid: categoryId },
-      });
-      const filtered = Array.isArray(response.data) ? response.data : [];
-      setTransactionTypes(filtered);
+      const data = await fetchExpenseTable(filterMonth);
+      setExpenseData(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error fetching transaction types:', error);
+      console.error("Error fetching expense data:", error);
     }
   };
 
-  const openModal = async () => {
-    setIsModalOpen(true);
+  useEffect(() => {
+    getExpenseData(month);
+
+    const getCategories = async () => {
+      try {
+        const data = await fetchCategories();
+        if (Array.isArray(data)) {
+          const expenseCats = data.filter((c: any) => c.category_type === "Expense");
+          setCategories(expenseCats);
+        } else {
+          setCategories([]);
+          console.error("Fetched categories data is not an array:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    getCategories();
+
+    const collapseBtn = document.getElementById("collapseBtn");
+    const sidebar = document.getElementById("sidebar");
+
+    const handleCollapse = () => {
+      if (sidebar) sidebar.classList.toggle("collapsed");
+    };
+
+    if (collapseBtn) collapseBtn.addEventListener("click", handleCollapse);
+    return () => {
+      if (collapseBtn) collapseBtn.removeEventListener("click", handleCollapse);
+    };
+  }, [month]);
+
+  const handleCategoryChange = async (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setSelectedTransaction('');
+    setTransactionTypes([]);
     try {
-      const response = await axios.get('http://localhost:8442/finance/categoryid');
-      const dataArray = Array.isArray(response.data) ? response.data : [];
-      const filteredCategories = dataArray.filter((cat: any) => cat.category_type === 'Expense');
-      setCategories(filteredCategories);
+      const types = await fetchTransactionTypes(categoryId);
+      setTransactionTypes(Array.isArray(types) ? types : []);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching transaction types:", error);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const userid = storage.get('userid');
+    const userid = storage.get("userid");
     try {
-      const selectedMap = transactionTypes.find(t => t.transactiontype === selectedTransaction);
-      const response = await axios.post('http://localhost:8442/finance/insert', null, {
-        params: {
-          userid,
-          categoryid: selectedCategoryId,
-          transaction_type: selectedTransaction,
-          mapid: selectedMap?.mapid,
-          amount
-        }
-      });
-      if (response.data === true) {
+      const success = await insertExpenseTransaction(
+        userid,
+        selectedCategory,
+        'Expense',
+        mapId,
+        amount
+      );
+      if (success) {
+        showToast("Expense added successfully!", "success");
         setIsModalOpen(false);
-        setSelectedCategoryId('');
+        setSelectedCategory('');
         setSelectedTransaction('');
         setAmount('');
-        const updatedData = await fetchExpenseTable();
+        setTransactionTypes([]);
+        const updatedData = await fetchExpenseTable(month);
         setExpenseData(Array.isArray(updatedData) ? updatedData : []);
       } else {
-        alert('Failed to insert expense.');
+        showToast("Failed to add expense.", "error");
       }
     } catch (error) {
-      console.error('Error submitting expense:', error);
+      showToast("Error submitting expense.", "error");
+      console.error(error);
     }
   };
 
   return (
     <div className="container">
+      {/* Sidebar */}
       <aside className="sidebar" id="sidebar">
         <div className="sidebar-header">
           <button className="collapse-btn" id="collapseBtn">
             <FontAwesomeIcon icon={faBars} />
           </button>
         </div>
-        <nav>
+        <nav id="navMenu">
           <ul>
-            {([
-              { path: '/dashboard', icon: faTachometerAlt, label: 'Dashboard' },
-              { path: '/transactions', icon: faExchangeAlt, label: 'Transactions' },
-              { path: '/income', icon: faWallet, label: 'Income' },
-              { path: '/expense', icon: faWallet, label: 'Expense' },
-              { path: '/planning', icon: faCalendarAlt, label: 'Planning' },
-              { path: '/analytics', icon: faChartLine, label: 'Analytics' },
-              { path: '/reports', icon: faFileAlt, label: 'Reports' },
-              { path: '/settings', icon: faCog, label: 'Settings' }
-            ]).map(({ path, icon, label }) => (
-              <li key={path}>
-                <Link to={path} className={`nav-btn ${isActive(path) ? 'active' : ''}`}>
-                  <FontAwesomeIcon icon={icon} /> <span>{label}</span>
-                </Link>
-              </li>
-            ))}
-            <li>
-              <Link to="/" className="logout-btn">
-                <FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span>
-              </Link>
-            </li>
+            <li><Link to="/dashboard" className={`nav-btn ${isActive('/dashboard') ? 'active' : ''}`}><FontAwesomeIcon icon={faTachometerAlt} /> <span>Dashboard</span></Link></li>
+            <li><Link to="/transactions" className={`nav-btn ${isActive('/transactions') ? 'active' : ''}`}><FontAwesomeIcon icon={faExchangeAlt} /> <span>Transactions</span></Link></li>
+            <li><Link to="/income" className={`nav-btn ${isActive('/income') ? 'active' : ''}`}><FontAwesomeIcon icon={faWallet} /> <span>Income</span></Link></li>
+            <li><Link to="/expense" className={`nav-btn ${isActive('/expense') ? 'active' : ''}`}><FontAwesomeIcon icon={faWallet} /> <span>Expense</span></Link></li>
+            <li><Link to="/planning" className={`nav-btn ${isActive('/planning') ? 'active' : ''}`}><FontAwesomeIcon icon={faCalendarAlt} /> <span>Planning</span></Link></li>
+            <li><Link to="/analytics" className={`nav-btn ${isActive('/analytics') ? 'active' : ''}`}><FontAwesomeIcon icon={faChartLine} /> <span>Analytics</span></Link></li>
+            <li><Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}><FontAwesomeIcon icon={faCog} /> <span>Settings</span></Link></li>
+            <li><Link to="/" className="logout-btn"><FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span></Link></li>
           </ul>
         </nav>
       </aside>
 
+      {/* Main */}
       <main className="dashboard">
         <header className="topbar">
           <div className="topbar-content">
@@ -153,7 +177,19 @@ const Expense: React.FC = () => {
 
         <section className="section-header">
           <h2>Expense Overview</h2>
-          <button className="addbtn" onClick={openModal}>
+          {/* Month dropdown filter */}
+          <select
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+            className="month-select"
+          >
+            {monthOptions.map((m) => (
+              <option key={m} value={m}>
+                {new Date(`${m}-01`).toLocaleString('default', { month: 'long', year: 'numeric' })}
+              </option>
+            ))}
+          </select>
+          <button className="addbtn" onClick={() => setIsModalOpen(true)}>
             <FontAwesomeIcon icon={faPlus} /> Add Expense
           </button>
         </section>
@@ -191,13 +227,24 @@ const Expense: React.FC = () => {
         </section>
       </main>
 
-      <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} className="modal" overlayClassName="overlay">
-        <h2>Add Expense</h2>
+      {/* Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Add Expense"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <h2>Add New Expense</h2>
         <form onSubmit={handleSubmit}>
           <label>Category</label>
-          <select value={selectedCategoryId} onChange={e => handleCategoryChange(e.target.value)} required>
+          <select
+            value={selectedCategory}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            required
+          >
             <option value="">Select Category</option>
-            {categories.map(cat => (
+            {categories.map((cat) => (
               <option key={cat.categoryid} value={cat.categoryid}>
                 {cat.category_name}
               </option>
@@ -205,26 +252,43 @@ const Expense: React.FC = () => {
           </select>
 
           <label>Transaction Type</label>
-          <select value={selectedTransaction} onChange={e => {
-            setSelectedTransaction(e.target.value);
-            const selected = transactionTypes.find(t => t.transactiontype === e.target.value);
-            setMapId(selected?.mapid || '');
-          }} required>
+          <select
+            value={selectedTransaction}
+            onChange={(e) => {
+              const selectedMap = transactionTypes.find((t) => t.transactiontype === e.target.value);
+              setSelectedTransaction(e.target.value);
+              setMapId(selectedMap?.mapid || '');
+            }}
+            required
+          >
             <option value="">Select Type</option>
-            {transactionTypes.map(t => (
-              <option key={t.mapid} value={t.transactiontype}>{t.transactiontype}</option>
+            {transactionTypes.map((type) => (
+              <option key={type.mapid} value={type.transactiontype}>
+                {type.transactiontype}
+              </option>
             ))}
           </select>
 
           <label>Amount</label>
-          <input type="number" value={amount} onChange={e => setAmount(e.target.value)} required />
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            min="0"
+            required
+          />
 
-          <div className="modal-actions">
-            <button type="submit">Submit</button>
-            <button type="button" onClick={() => setIsModalOpen(false)}>Cancel</button>
-          </div>
+          <button type="submit" className="submit-btn">Submit</button>
+          <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
         </form>
       </Modal>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`toast ${toast.type}`}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 };

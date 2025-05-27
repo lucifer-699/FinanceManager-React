@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
@@ -6,7 +7,7 @@ import '../assets/css/dashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
-  faCalendarAlt, faChartLine, faFileAlt, faCog,
+  faCalendarAlt, faChartLine, faCog,
   faSignOutAlt, faBell, faPiggyBank
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -118,11 +119,6 @@ const Dashboard: React.FC = () => {
             <li>
               <Link to="/analytics" className={`nav-btn ${isActive('/analytics') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faChartLine} /> <span>Analytics</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/reports" className={`nav-btn ${isActive('/reports') ? 'active' : ''}`}>
-                <FontAwesomeIcon icon={faFileAlt} /> <span>Reports</span>
               </Link>
             </li>
             <li>

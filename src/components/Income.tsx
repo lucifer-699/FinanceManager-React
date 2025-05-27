@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
@@ -14,11 +15,11 @@ import '../assets/css/income.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
-  faCalendarAlt, faChartLine, faFileAlt, faCog,
+  faCalendarAlt, faChartLine, faCog,
   faSignOutAlt, faPlus, faEdit, faTrashAlt, faBell
 } from '@fortawesome/free-solid-svg-icons';
 
-Modal.setAppElement('#root'); // required for accessibility
+Modal.setAppElement('#root');
 
 const Income: React.FC = () => {
   const location = useLocation();
@@ -34,20 +35,40 @@ const Income: React.FC = () => {
   const [mapId, setMapId] = useState('');
   const [amount, setAmount] = useState('');
 
-  // Fetch income data
+  // Month dropdown options for current year
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+
+  const monthOptions = Array.from({ length: 12 }, (_, i) => {
+    const monthNum = String(i + 1).padStart(2, '0');
+    return `${currentYear}-${monthNum}`;
+  });
+
+  // Month filter, default current month YYYY-MM
+  const [month, setMonth] = useState(() => {
+    const now = new Date();
+    return now.toISOString().slice(0, 7);
+  });
+
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
+
+  const getDashboardData = async (filterMonth: string) => {
+    try {
+      const data = await fetchIncomeTable(filterMonth);
+      setIncomeData(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error fetching income data:", error);
+    }
+  };
+
   useEffect(() => {
-    const getDashboardData = async () => {
-      try {
-        const data = await fetchIncomeTable();
-        setIncomeData(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Error fetching income data:", error);
-      }
-    };
+    getDashboardData(month);
 
-    getDashboardData();
-
-    // Fetch categories for the modal
     const getCategories = async () => {
       try {
         const data = await fetchCategories();
@@ -83,7 +104,7 @@ const Income: React.FC = () => {
         collapseBtn.removeEventListener("click", handleCollapse);
       }
     };
-  }, []);
+  }, [month]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,19 +113,24 @@ const Income: React.FC = () => {
       const success = await insertIncomeTransaction(
         userid,
         selectedCategory,
-        selectedTransaction,
+        'Income',
         mapId,
         amount
       );
       if (success) {
-        alert("Income added successfully!");
+        showToast("Income added successfully!", "success");
         setIsModalOpen(false);
-        window.location.reload();
+        await getDashboardData(month);
+        setSelectedCategory('');
+        setSelectedTransaction('');
+        setTransactionTypes([]);
+        setMapId('');
+        setAmount('');
       } else {
-        alert("Failed to add income.");
+        showToast("Failed to add income.", "error");
       }
     } catch (error) {
-      alert("Error submitting income.");
+      showToast("Error submitting income.", "error");
       console.error(error);
     }
   };
@@ -151,11 +177,6 @@ const Income: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link to="/reports" className={`nav-btn ${isActive('/reports') ? 'active' : ''}`}>
-                <FontAwesomeIcon icon={faFileAlt} /> <span>Reports</span>
-              </Link>
-            </li>
-            <li>
               <Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faCog} /> <span>Settings</span>
               </Link>
@@ -183,6 +204,18 @@ const Income: React.FC = () => {
 
         <section className="section-header">
           <h2>Income Overview</h2>
+          {/* Month dropdown filter */}
+          <select
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+            className="month-select"
+          >
+            {monthOptions.map((m) => (
+              <option key={m} value={m}>
+                {new Date(`${m}-01`).toLocaleString('default', { month: 'long', year: 'numeric' })}
+              </option>
+            ))}
+          </select>
           <button className="addbtn" onClick={() => setIsModalOpen(true)}>
             <FontAwesomeIcon icon={faPlus} /> Add Income
           </button>
@@ -286,6 +319,13 @@ const Income: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`toast ${toast.type}`}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 };

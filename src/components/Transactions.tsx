@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/css/transactions.css';
@@ -5,56 +6,42 @@ import { fetchTransactionTable } from '../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
-  faCalendarAlt, faChartLine, faFileAlt, faCog,
-  faSignOutAlt, faBell
+  faCalendarAlt, faChartLine, faCog, faSignOutAlt, faBell
 } from '@fortawesome/free-solid-svg-icons';
 
 const Transactions: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
-const [transactionData, settransactionData] = useState<any[]>([]);
+
   const navigate = useNavigate();
-  
- useEffect(() => {
-    // Fetch the dashboard data when the component mounts
-    const getDashboardData = async () => {
+
+  // Current month and year
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+  const defaultMonth = `${currentYear}-${currentMonth}`;
+
+  const [selectedMonth, setSelectedMonth] = useState<string>(defaultMonth);
+  const [transactionData, setTransactionData] = useState<any[]>([]);
+
+  const monthOptions = Array.from({ length: 12 }, (_, i) => {
+    const monthNum = String(i + 1).padStart(2, '0');
+    return `${currentYear}-${monthNum}`;
+  });
+
+  useEffect(() => {
+    const getTransactionData = async () => {
       try {
-      const data = await fetchTransactionTable();
-      if (Array.isArray(data)) {
-        settransactionData(data); // If data is already an array, use it directly
-      } else {
-        settransactionData([]); // fallback: ensure it's always an array
-      }
-
-      // Move collapseBtn and sidebar logic into useEffect after DOM is updated
-      setTimeout(() => {
-        const collapseBtn = document.getElementById("collapseBtn");
-        const sidebar = document.getElementById("sidebar");
-
-        const handleCollapse = () => {
-          if (sidebar) {
-        sidebar.classList.toggle("collapsed");
-          }
-        };
-
-        if (collapseBtn) {
-          collapseBtn.addEventListener("click", handleCollapse);
-        }
-
-        // Clean up event listener on unmount
-        return () => {
-          if (collapseBtn) {
-        collapseBtn.removeEventListener("click", handleCollapse);
-          }
-        };
-      }, 0);
+        const data = await fetchTransactionTable(selectedMonth);
+        setTransactionData(Array.isArray(data) ? data : []);
       } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+        console.error("Error fetching transaction table data:", error);
       }
     };
 
-    getDashboardData();
+    getTransactionData();
 
+    // Sidebar collapse logic
     const collapseBtn = document.getElementById("collapseBtn");
     const sidebar = document.getElementById("sidebar");
 
@@ -73,13 +60,7 @@ const [transactionData, settransactionData] = useState<any[]>([]);
         collapseBtn.removeEventListener("click", handleCollapse);
       }
     };
-  }, []); // Empty dependency array to run once when the component mounts
-
-  if (!transactionData) {
-    return <div>Loading...</div>; // Show a loading state until the data is fetched
-  }
-
-
+  }, [selectedMonth]);
 
   return (
     <div className="container">
@@ -123,11 +104,6 @@ const [transactionData, settransactionData] = useState<any[]>([]);
               </Link>
             </li>
             <li>
-              <Link to="/reports" className={`nav-btn ${isActive('/reports') ? 'active' : ''}`}>
-                <FontAwesomeIcon icon={faFileAlt} /> <span>Reports</span>
-              </Link>
-            </li>
-            <li>
               <Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faCog} /> <span>Settings</span>
               </Link>
@@ -141,13 +117,12 @@ const [transactionData, settransactionData] = useState<any[]>([]);
         </nav>
       </aside>
 
-
       <main className="dashboard">
         <header className="topbar">
           <div className="topbar-content">
             <div className="title">Transactions</div>
             <div className="actions">
-            <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
+              <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
               <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
               <FontAwesomeIcon icon={faBell} />
               <div className="profile">Sishir Shrestha</div>
@@ -158,12 +133,15 @@ const [transactionData, settransactionData] = useState<any[]>([]);
         <section className="transaction-section">
           <div className="transaction-header">
             <h2>Recent Transactions</h2>
-            <select>
-              <option>Last 30 Days</option>
-              <option>Last 7 Days</option>
-              <option>This Month</option>
+            <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+              {monthOptions.map((month) => (
+                <option key={month} value={month}>
+                  {new Date(`${month}-01`).toLocaleString("default", { month: "long", year: "numeric" })}
+                </option>
+              ))}
             </select>
           </div>
+
           <table className="transaction-table">
             <thead>
               <tr>
@@ -174,24 +152,23 @@ const [transactionData, settransactionData] = useState<any[]>([]);
                 <th>Type</th>
               </tr>
             </thead>
-          <tbody>
-                              {transactionData.length > 0 ? (
-                                transactionData.map((transaction, index) => (
-                                  <tr key={index}>
-                                    <td>{transaction.createdate ? new Date(transaction.createdate).toISOString().slice(0, 10) : 'N/A'}</td>
-                                    <td>{transaction.category_name || 'N/A'}</td>
-                                     <td>{transaction.transactiontype || 'N/A'}</td>
-                                    <td>{transaction.amount ? `Rs  ${parseFloat(transaction.amount).toFixed(0)}` : 'N/A'}</td>
-                                    <td>{transaction.typed || 'N/A'}</td>
-                                    
-                                  </tr>
-                                ))
-                              ) : (
-                                <tr>
-                                  <td colSpan={5}>No transaction records found.</td>
-                                </tr>
-                              )}
-                            </tbody>
+            <tbody>
+              {transactionData.length > 0 ? (
+                transactionData.map((transaction, index) => (
+                  <tr key={index}>
+                    <td>{transaction.createdate ? new Date(transaction.createdate).toISOString().slice(0, 10) : 'N/A'}</td>
+                    <td>{transaction.category_name || 'N/A'}</td>
+                    <td>{transaction.transactiontype || 'N/A'}</td>
+                    <td>{transaction.amount ? `Rs ${parseFloat(transaction.amount).toFixed(0)}` : 'N/A'}</td>
+                    <td>{transaction.typed || 'N/A'}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5}>No transaction records found.</td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </section>
       </main>

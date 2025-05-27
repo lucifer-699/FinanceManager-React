@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +13,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
-  faCalendarAlt, faChartLine, faFileAlt, faCog,
+  faCalendarAlt, faChartLine, faCog,
   faSignOutAlt, faBell
 } from '@fortawesome/free-solid-svg-icons';
 import '../assets/css/analytics.css';
@@ -59,7 +60,6 @@ const Analytics: React.FC = () => {
             <li><a href="/expense" className="nav-btn"><FontAwesomeIcon icon={faWallet} /> <span>Expense</span></a></li>
             <li><a href="/planning" className="nav-btn"><FontAwesomeIcon icon={faCalendarAlt} /> <span>Planning</span></a></li>
             <li><a href="/analytics" className="nav-btn active"><FontAwesomeIcon icon={faChartLine} /> <span>Analytics</span></a></li>
-            <li><a href="/reports" className="nav-btn"><FontAwesomeIcon icon={faFileAlt} /> <span>Reports</span></a></li>
             <li><a href="/settings" className="nav-btn"><FontAwesomeIcon icon={faCog} /> <span>Settings</span></a></li>
             <li><a href="/" className="logout-btn"><FontAwesomeIcon icon={faSignOutAlt} /> <span>Logout</span></a></li>
           </ul>
