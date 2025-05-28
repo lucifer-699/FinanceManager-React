@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
+import { useUser } from "../context/UserContext"; 
 import {
   fetchPlanning,
   fetchCategories,
@@ -35,7 +36,7 @@ const Planning: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isActive = (path: string) => location.pathname === path;
-
+  const { user } = useUser();
   const [planningData, setPlanningData] = useState<PlanningItem[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
@@ -208,7 +209,7 @@ const Planning: React.FC = () => {
               <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
               <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
               <FontAwesomeIcon icon={faBell} />
-              <div className="profile">Sishir Shrestha</div>
+             <div className="profile">{user ? `${user.firstname} ${user.lastname}` : ""}</div> 
             </div>
           </div>
         </header>

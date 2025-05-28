@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-
+import { useUser } from '../context/UserContext';
 import { fetchDashboardData } from '../api/api'; // Import the API function
 import '../assets/css/dashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,44 +17,56 @@ const Dashboard: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
   const [dashboardData, setDashboardData] = useState<any>(null); // State to hold dashboard data 
   const navigate = useNavigate();
+  const { user, setUser } = useUser();
 
   useEffect(() => {
-    // Fetch the dashboard data when the component mounts
     const getDashboardData = async () => {
       try {
-      const data = await fetchDashboardData();
-       console.log(data); 
-    if (Array.isArray(data)) {
-      setDashboardData(data[0]); // Assuming data is an array and we're using the first item
-    } else {
-      setDashboardData(data); // fallback if data is not an array
-    }
-    // Move collapseBtn and sidebar logic into useEffect after DOM is updated
-    setTimeout(() => {
-      const collapseBtn = document.getElementById("collapseBtn");
-      const sidebar = document.getElementById("sidebar");
+        const data = await fetchDashboardData();
+        console.log(data);
 
-      const handleCollapse = () => {
-        if (sidebar) {
-          sidebar.classList.toggle("collapsed");
+        if (Array.isArray(data) && data.length > 0) {
+          const d = data[0];
+          if (d.firstname && d.lastname) {
+            setUser({ firstname: d.firstname, lastname: d.lastname });
+          }
+          setDashboardData({
+            ...d,
+            balance: d.balance ?? 0,
+            balancechange: d.balancechange ?? 0,
+            totalIncome: d.totalIncome ?? 0,
+            incomeChange: d.incomeChange ?? 0,
+            totalExpense: d.totalExpense ?? 0,
+            expenseChange: d.expenseChange ?? 0,
+            savings: d.savings ?? 0,
+            savingPercent: d.savingPercent ?? 0,
+          });
+        } else {
+          setDashboardData({
+            balance: 0,
+            balancechange: 0,
+            totalIncome: 0,
+            incomeChange: 0,
+            totalExpense: 0,
+            expenseChange: 0,
+            savings: 0,
+            savingPercent: 0,
+          });
         }
-      };
-
-      if (collapseBtn) {
-        collapseBtn.addEventListener("click", handleCollapse);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setDashboardData({
+          balance: 0,
+          balancechange: 0,
+          totalIncome: 0,
+          incomeChange: 0,
+          totalExpense: 0,
+          expenseChange: 0,
+          savings: 0,
+          savingPercent: 0,
+        });
       }
-
-      // Clean up event listener on unmount
-      return () => {
-        if (collapseBtn) {
-          collapseBtn.removeEventListener("click", handleCollapse);
-        }
-      };
-    }, 0);
-  } catch (error) {
-    console.error("Error fetching dashboard data:", error);
-  }
-  };
+    };
 
     getDashboardData();
 
@@ -76,14 +88,13 @@ const Dashboard: React.FC = () => {
         collapseBtn.removeEventListener("click", handleCollapse);
       }
     };
-  }, []); // Empty dependency array to run once when the component mounts
+  }, [setUser]);
 
   if (!dashboardData) {
-    return <div>Loading...</div>; // Show a loading state until the data is fetched
+    return <div>Loading...</div>;
   }
-
   return (
-   <div className="container">
+    <div className="container">
       <aside className="sidebar" id="sidebar">
         <div className="sidebar-header">
           <button className="collapse-btn" id="collapseBtn">
@@ -93,7 +104,7 @@ const Dashboard: React.FC = () => {
         <nav id="navMenu">
           <ul>
             <li>
-              <Link to="/dashboard" className={`nav-btn ${isActive('/') ? 'active' : ''}`}>
+              <Link to="/dashboard" className={`nav-btn ${isActive('/dashboard') ? 'active' : ''}`}>
                 <FontAwesomeIcon icon={faTachometerAlt} /> <span>Dashboard</span>
               </Link>
             </li>
@@ -129,7 +140,7 @@ const Dashboard: React.FC = () => {
             </li>
             <li>
               <Link to="/admin" className={`nav-btn ${isActive('/admin') ? 'active' : ''}`}>
-                 <FontAwesomeIcon icon={faUser} /> <span>Admin</span>
+                <FontAwesomeIcon icon={faUser} /> <span>Admin</span>
               </Link>
             </li>
             <li>
@@ -140,18 +151,18 @@ const Dashboard: React.FC = () => {
           </ul>
         </nav>
       </aside>
-         <main className="dashboard">
+      <main className="dashboard">
         <header className="topbar">
-              <div className="topbar-content">
-                <div className="title">Dashboard</div>
-                <div className="actions">
-               <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
+          <div className="topbar-content">
+            <div className="title">Dashboard</div>
+            <div className="actions">
+              <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
               <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
-                  <FontAwesomeIcon icon={faBell} />
-                  <div className="profile">{dashboardData.firstname} {dashboardData.lastname}</div>
-                </div>
-              </div>
-            </header> 
+              <FontAwesomeIcon icon={faBell} />
+              <div className="profile">{user ? `${user.firstname} ${user.lastname}` : ''}</div>
+            </div>
+          </div>
+        </header>
 
         <section className="cards">
           <div className="card">

@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { deleteTransaction } from '../api/api';
 import Modal from 'react-modal';
+import { useUser } from "../context/UserContext"; 
 import {
   fetchIncomeTable,
   fetchCategories,
@@ -25,7 +28,7 @@ Modal.setAppElement('#root');
 const Income: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
-
+  const { user } = useUser();
   const [incomeData, setIncomeData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,6 +38,7 @@ const Income: React.FC = () => {
   const [selectedTransaction, setSelectedTransaction] = useState('');
   const [mapId, setMapId] = useState('');
   const [amount, setAmount] = useState('');
+   const [remarks, setRemarks] = useState('');
 
   // Month dropdown options for current year
   const currentDate = new Date();
@@ -57,6 +61,25 @@ const Income: React.FC = () => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 5000);
   };
+
+  const handleDelete = async (transactionid: string) => {
+  const userid = storage.get("userid");
+  const confirmDelete = window.confirm("Are you sure you want to delete this income record?");
+  if (!confirmDelete) return;
+
+  try {
+    const success = await deleteTransaction(transactionid, userid);
+    if (success) {
+      showToast("Income deleted successfully!", "success");
+      await getDashboardData(month); // Refresh table data
+    } else {
+      showToast("Failed to delete income.", "error");
+    }
+  } catch (error) {
+    showToast("Error deleting income.", "error");
+    console.error("Delete error:", error);
+  }
+};
 
   const getDashboardData = async (filterMonth: string) => {
     try {
@@ -116,7 +139,8 @@ const Income: React.FC = () => {
         selectedCategory,
         'Income',
         mapId,
-        amount
+        amount,
+        remarks
       );
       if (success) {
         showToast("Income added successfully!", "success");
@@ -203,7 +227,7 @@ const Income: React.FC = () => {
             <div className="title">Income</div>
             <div className="actions">
               <FontAwesomeIcon icon={faBell} />
-              <div className="profile">Sishir Shrestha</div>
+             <div className="profile">{user ? `${user.firstname} ${user.lastname}` : ""}</div> 
             </div>
           </div>
         </header>
@@ -235,6 +259,7 @@ const Income: React.FC = () => {
                 <th>Source</th>
                 <th>Amount</th>
                 <th>Category</th>
+                <th>Remarks</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -246,11 +271,17 @@ const Income: React.FC = () => {
                     <td>{income.categoryName || 'N/A'}</td>
                     <td>{income.amount ? `Rs ${parseFloat(income.amount).toFixed(0)}` : 'N/A'}</td>
                     <td>{income.categoryType || 'N/A'}</td>
+                    <td>{income.remarks || 'N/A'}</td>
                     <td>
-                      <button className="edit-btn"><FontAwesomeIcon icon={faEdit} /></button>
-                      <button className="delete-btn"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(income.transactionid)}
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </button>
                     </td>
-                  </tr>
+                  </tr> 
                 ))
               ) : (
                 <tr>
@@ -316,6 +347,13 @@ const Income: React.FC = () => {
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
+            required
+          />
+            <label>Remarks</label>
+          <input
+            type="text"
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
             required
           />
 

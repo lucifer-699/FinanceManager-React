@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useUser } from "../context/UserContext"; 
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
+import { deleteTransaction } from '../api/api';
 import {
   fetchExpenseTable,
   fetchCategories,
@@ -25,7 +28,7 @@ Modal.setAppElement('#root'); // for accessibility
 const Expense: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
-
+  const { user } = useUser();
   const [expenseData, setExpenseData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
@@ -34,7 +37,7 @@ const Expense: React.FC = () => {
   const [selectedTransaction, setSelectedTransaction] = useState('');
   const [mapId, setMapId] = useState('');
   const [amount, setAmount] = useState('');
-
+  const [remarks, setRemarks] = useState('');
   // Month dropdown options for current year
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -49,6 +52,25 @@ const Expense: React.FC = () => {
     const now = new Date();
     return now.toISOString().slice(0, 7);
   });
+
+  const handleDelete = async (transactionid: string) => {
+  const userid = storage.get("userid");
+  const confirmDelete = window.confirm("Are you sure you want to delete this income record?");
+  if (!confirmDelete) return;
+
+  try {
+    const success = await deleteTransaction(transactionid, userid);
+    if (success) {
+      showToast("Income deleted successfully!", "success");
+      await getExpenseData(month); // Refresh table data
+    } else {
+      showToast("Failed to delete income.", "error");
+    }
+  } catch (error) {
+    showToast("Error deleting income.", "error");
+    console.error("Delete error:", error);
+  }
+};
 
   // Toast state
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -121,7 +143,8 @@ const Expense: React.FC = () => {
         selectedCategory,
         'Expense',
         mapId,
-        amount
+        amount,
+        remarks
       );
       if (success) {
         showToast("Expense added successfully!", "success");
@@ -208,7 +231,7 @@ const Expense: React.FC = () => {
             <div className="title">Expense</div>
             <div className="actions">
               <FontAwesomeIcon icon={faBell} />
-              <div className="profile">Sishir Shrestha</div>
+             <div className="profile">{user ? `${user.firstname} ${user.lastname}` : ""}</div> 
             </div>
           </div>
         </header>
@@ -240,6 +263,7 @@ const Expense: React.FC = () => {
                 <th>Source</th>
                 <th>Amount</th>
                 <th>Category</th>
+                <th>Remarks</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -251,10 +275,15 @@ const Expense: React.FC = () => {
                     <td>{expense.categoryName || 'N/A'}</td>
                     <td>{expense.amount ? `Rs ${parseFloat(expense.amount).toFixed(0)}` : 'N/A'}</td>
                     <td>{expense.categoryType || 'N/A'}</td>
+                     <td>{expense.remarks || 'N/A'}</td>
                     <td>
-                      <button className="edit-btn"><FontAwesomeIcon icon={faEdit} /></button>
-                      <button className="delete-btn"><FontAwesomeIcon icon={faTrashAlt} /></button>
-                    </td>
+                      <button
+                                         className="delete-btn"
+                                         onClick={() => handleDelete(expense.transactionid)}
+                                       >
+                                         <FontAwesomeIcon icon={faTrashAlt} />
+                                       </button>
+                                       </td>
                   </tr>
                 ))
               ) : (
@@ -315,7 +344,13 @@ const Expense: React.FC = () => {
             min="0"
             required
           />
-
+     <label>Remarks</label>
+          <input
+            type="text"
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+            required
+          />
           <div className="modal-actions">
             <button type="submit">Submit</button>
             <button type="button" onClick={() => setIsModalOpen(false)}>Cancel</button>

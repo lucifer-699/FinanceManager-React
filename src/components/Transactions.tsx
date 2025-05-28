@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/css/transactions.css';
 import { fetchTransactionTable } from '../api/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useUser } from "../context/UserContext"; 
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faCog, faSignOutAlt, faBell,
@@ -13,7 +15,7 @@ import {
 const Transactions: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
-
+  const { user } = useUser();
   const navigate = useNavigate();
 
   // Current month and year
@@ -131,7 +133,7 @@ const Transactions: React.FC = () => {
               <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
               <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
               <FontAwesomeIcon icon={faBell} />
-              <div className="profile">Sishir Shrestha</div>
+              <div className="profile">{user ? `${user.firstname} ${user.lastname}` : ""}</div> 
             </div>
           </div>
         </header>

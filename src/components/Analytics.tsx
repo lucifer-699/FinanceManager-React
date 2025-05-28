@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+import { useUser } from "../context/UserContext"; 
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -22,6 +23,7 @@ import '../assets/css/analytics.css';
 const Analytics: React.FC = () => {
   const [monthlyData, setMonthlyData] = useState<any[]>([]);
   const [categoryData, setCategoryData] = useState<any[]>([]);
+ const { user } = useUser();
   const navigate = useNavigate();
   useEffect(() => {
     const loadData = async () => {
@@ -139,7 +141,7 @@ const Analytics: React.FC = () => {
              <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
               <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
               <FontAwesomeIcon icon={faBell} />
-              <div className="profile">User</div>
+            <div className="profile">{user ? `${user.firstname} ${user.lastname}` : ""}</div> 
             </div>
           </div>
         </header>

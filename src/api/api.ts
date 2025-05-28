@@ -188,7 +188,8 @@ export const insertIncomeTransaction = async (
   categoryid: string,
   transaction_type: string,
   mapid: string,
-  amount: string
+  amount: string,
+  remarks: string 
 ) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/finance/insertinex`, null, {
@@ -198,6 +199,7 @@ export const insertIncomeTransaction = async (
         transaction_type,
         mapid,
         amount,
+        remarks, 
       },
     });
     return response.data;
@@ -213,7 +215,8 @@ export const insertExpenseTransaction = async (
   categoryid: string,
   transaction_type: string,
   mapid: string,
-  amount: string
+  amount: string,
+  remarks: string
 ) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/finance/insertinex`, null, {
@@ -223,6 +226,7 @@ export const insertExpenseTransaction = async (
         transaction_type,
         mapid,
         amount,
+        remarks, // Add remarks for expense transaction
       },
     });
     return response.data;
@@ -290,6 +294,43 @@ export const insertCategoryMapping = async (
     return response.data; // returns a boolean
   } catch (error) {
     console.error("Error inserting category mapping:", error);
+    throw error;
+  }
+};
+export const insertUser = async (
+  firstname: string,
+  lastname: string,
+  email: string,
+  password: string,
+  phone_number: string
+) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/finance/insertUser`, null, {
+      params: {
+        firstname,
+        lastname,
+        email,
+        password,
+        phone_number
+      }
+    });
+    return response.data; // should be true/false
+  } catch (error) {
+    console.error("Error inserting user:", error);
+    throw error;
+  }
+};
+export const deleteTransaction = async (transactionid: string, userid: string) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/finance/deleteTransaction`, null, {
+      params: {
+        transactionid,
+        userid,
+      },
+    });
+    return response.data; // true if deleted, false otherwise
+  } catch (error) {
+    console.error("Error deleting transaction:", error);
     throw error;
   }
 };

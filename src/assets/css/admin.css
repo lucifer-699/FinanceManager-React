@@ -149,6 +149,8 @@ body, html {
   padding: 20px;
   max-width: 600px;
   margin: 0 auto;
+      margin-left: 2%;
+
 }
 
 .form {
@@ -186,4 +188,38 @@ body, html {
 
 .btn:hover {
   background-color: #57606f;
+}
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  color: white;
+  border-radius: 5px;
+  z-index: 1000;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease forwards;
+}
+
+/* Success style */
+.toast.success {
+  background-color: #4caf50; /* Green */
+}
+
+/* Error style */
+.toast.error {
+  background-color: #f44336; /* Red */
+}
+
+/* Optional animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

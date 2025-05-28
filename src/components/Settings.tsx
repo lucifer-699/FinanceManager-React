@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../assets/css/settings.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useUser } from "../context/UserContext"; 
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faCog,
@@ -12,7 +14,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 const Income: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { user } = useUser();
   const [theme, setTheme] = useState('light');         // Current applied theme
   const [selectedTheme, setSelectedTheme] = useState('light'); // Dropdown value
 
@@ -130,7 +132,7 @@ const Income: React.FC = () => {
               <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
               <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>
               <FontAwesomeIcon icon={faBell} />
-              <div className="profile">Sishir Shrestha</div>
+              <div className="profile">{user ? `${user.firstname} ${user.lastname}` : ""}</div> 
             </div>
           </div>
         </header>

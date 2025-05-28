@@ -1,31 +1,35 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Dashboard from './components/Dashboard.tsx';
-import Transactions from './components/Transactions.tsx';
-import Income from './components/Income.tsx';
-import Expense from './components/Expense.tsx';
-import Planning from './components/Planning.tsx';
-import Analytics from './components/Analytics.tsx';
-import Admin from './components/Admin.tsx';
-import Settings from './components/Settings.tsx';
-import Login from './components/Login.tsx';
+
+import Dashboard from './components/Dashboard';
+import Transactions from './components/Transactions';
+import Income from './components/Income';
+import Expense from './components/Expense';
+import Planning from './components/Planning';
+import Analytics from './components/Analytics';
+import Admin from './components/Admin';
+import Settings from './components/Settings';
+import Login from './components/Login';
+
+import { UserProvider } from './context/UserContext'; // <-- import UserProvider
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/income" element={<Income />} />
-         <Route path="/expense" element={<Expense />} />
-        <Route path="/transactions" element={<Transactions />} />
-       <Route path="/" element={<Login />} />
-        <Route path="/analytics" element={<Analytics />} />
+    <UserProvider>  {/* Wrap the entire router */}
+      <Router>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/income" element={<Income />} />
+          <Route path="/expense" element={<Expense />} />
+          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/planning" element={<Planning />} />
-        <Route path="/admin" element={<Admin />} />
-     
-      </Routes>
-    </Router>
+          <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </Router>
+    </UserProvider>
   );
 };
 
