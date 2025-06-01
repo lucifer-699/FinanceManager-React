@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faCog,
-  faSignOutAlt, faPlus, faEdit, faTrashAlt, faBell,
+  faSignOutAlt, faPlus, faTrashAlt, faBell,
   faUser
 } from '@fortawesome/free-solid-svg-icons';
 

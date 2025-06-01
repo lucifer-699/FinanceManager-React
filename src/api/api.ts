@@ -2,7 +2,7 @@
 import axios from "axios";
 import { storage } from "../storage";
 
-const API_BASE_URL = "http://localhost:8442";
+const API_BASE_URL = "http://16.16.91.79:8442";
 
 // Existing loginUser function
 export const loginUser = async (email: string, password: string) => {
@@ -134,7 +134,7 @@ export const fetchSpendingTrend = async () => {
 export const fetchMonthlyIncomeExpense = async () => {
   try {
     const userid = storage.get("userid");
-    const response = await axios.get("http://localhost:8442/finance/incomeExpense", {
+    const response = await axios.get("http://16.16.91.79:8442/finance/incomeExpense", {
       params: { userid },
     });
     return response.data;
@@ -148,7 +148,7 @@ export const fetchMonthlyIncomeExpense = async () => {
 export const fetchAnalyticsCategory = async () => {
   try {
     const userid = storage.get("userid");
-    const response = await axios.get("http://localhost:8442/finance/analyticsCategory", {
+    const response = await axios.get("http://16.16.91.79:8442/finance/analyticsCategory", {
       params: { userid },
     });
     return response.data;
@@ -161,7 +161,7 @@ export const fetchAnalyticsCategory = async () => {
 // Fetch all categories (only 'Income' type will be used in UI)
 export const fetchCategories = async () => {
   try {
-    const response = await axios.get("http://localhost:8442/finance/categoryid");
+    const response = await axios.get("http://16.16.91.79:8442/finance/categoryid");
     return response.data;
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -172,7 +172,7 @@ export const fetchCategories = async () => {
 // Fetch transaction types based on selected category
 export const fetchTransactionTypes = async (categoryid: string) => {
   try {
-    const response =  await axios.get("http://localhost:8442/finance/mapid", {
+    const response =  await axios.get("http://16.16.91.79:8442/finance/mapid", {
       params: { categoryid },
     });
     return response.data;

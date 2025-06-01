@@ -2,22 +2,37 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { fetchDashboardData } from '../api/api'; // Import the API function
+import { fetchDashboardData } from '../api/api';
 import '../assets/css/dashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTachometerAlt, faExchangeAlt, faWallet,
   faCalendarAlt, faChartLine, faCog,
   faSignOutAlt, faBell, faPiggyBank,
-  faUser
+  faUser, faEye, faEyeSlash
 } from '@fortawesome/free-solid-svg-icons';
 
 const Dashboard: React.FC = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
-  const [dashboardData, setDashboardData] = useState<any>(null); // State to hold dashboard data 
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [isVisible, setIsVisible] = useState<boolean>(() => {
+    const stored = localStorage.getItem('showSensitiveData');
+    return stored === null ? true : stored === 'true';
+  });
+
+  const toggleVisibility = () => {
+    const newValue = !isVisible;
+    setIsVisible(newValue);
+    localStorage.setItem('showSensitiveData', newValue.toString());
+  };
+
   const navigate = useNavigate();
   const { user, setUser } = useUser();
+
+  const formatAmount = (amount: number | string) => {
+    return isVisible ? `Rs ${amount}` : 'Rs ****';
+  };
 
   useEffect(() => {
     const getDashboardData = async () => {
@@ -93,6 +108,7 @@ const Dashboard: React.FC = () => {
   if (!dashboardData) {
     return <div>Loading...</div>;
   }
+
   return (
     <div className="container">
       <aside className="sidebar" id="sidebar">
@@ -152,6 +168,13 @@ const Dashboard: React.FC = () => {
         </nav>
       </aside>
       <main className="dashboard">
+        {/* Eye Toggle Button */}
+        <div className="eye-toggle">
+          <button onClick={toggleVisibility}>
+            <FontAwesomeIcon icon={isVisible ? faEye : faEyeSlash} size="lg" />
+          </button>
+        </div>
+
         <header className="topbar">
           <div className="topbar-content">
             <div className="title">Dashboard</div>
@@ -167,27 +190,26 @@ const Dashboard: React.FC = () => {
         <section className="cards">
           <div className="card">
             <h3>Total Balance</h3>
-            <p className="amount">Rs {dashboardData.balance}</p>
+            <p className="amount">{formatAmount(dashboardData.balance)}</p>
             <p className="note">{`+Rs ${parseFloat(dashboardData.balancechange) - 0} from last month`}</p>
           </div>
           <div className="card">
             <h3>Income <span className="down">&#x25BC;</span></h3>
-            <p className="amount">Rs {dashboardData.totalIncome}</p>
+            <p className="amount">{formatAmount(dashboardData.totalIncome)}</p>
             <p className="note">{`+Rs ${parseFloat(dashboardData.incomeChange) - 0} from last month`}</p>
           </div>
           <div className="card-expense">
             <h3>Expenses <span className="up">&#x25B2;</span></h3>
-            <p className="amount">Rs {dashboardData.totalExpense}</p>
+            <p className="amount">{formatAmount(dashboardData.totalExpense)}</p>
             <p className="note">{`+Rs ${parseFloat(dashboardData.expenseChange) - 0} from last month`}</p>
           </div>
           <div className="card">
             <h3>Savings <FontAwesomeIcon icon={faPiggyBank} /></h3>
-            <p className="amount">Rs {dashboardData.savings}</p>
+            <p className="amount">{formatAmount(dashboardData.savings)}</p>
             <p className="note">{`${dashboardData.savingPercent}% of income`}</p>
           </div>
         </section>
 
-        {/* Charts section remains unchanged */}
         <section className="charts">
           <div className="chart-card">
             <h3>Income vs Expenses</h3>

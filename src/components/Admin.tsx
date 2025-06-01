@@ -43,8 +43,6 @@ const Admin: React.FC = () => {
     };
   }, []);
 
-  const [profile] = useState({ firstname: "Admin", lastname: "User" });
-
   const [categoryName, setCategoryName] = useState("");
   const [categoryType, setCategoryType] = useState("");
 
