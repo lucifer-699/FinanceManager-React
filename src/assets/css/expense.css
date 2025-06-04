@@ -162,10 +162,25 @@ body, html {
   cursor: pointer;
   border-radius: 5px;
 }
-
+.income-btn:hover {
+   transform: translateY(-4px);
+  transition: background-color 0.3s ease;;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+ background-color: lightgreen;
+  color: #065f46;;
+}
+.expense-btn:hover {
+  transform: translateY(-4px);
+  transition: background-color 0.3s ease;;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+ background-color:  #ff6666;
+  color: #065f46;;
+}
 .profile {
   font-weight: bold;
+    color: black;
 }
+
 
 /* Shared: Income / Expense Pages */
 .section-header {
@@ -256,4 +271,74 @@ body, html {
   .charts {
     flex-direction: column;
   }
+}
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  min-width: 250px;
+  padding: 15px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 10000; /* higher z-index to be on top */
+  opacity: 0.9;
+  animation: fadein 0.5s;
+}
+
+.toast.success {
+  background-color: #4BB543; /* green */
+}
+
+.toast.error {
+  background-color: #FF4C4C; /* red */
+}
+
+
+.submit-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background-color: rgb(73, 185, 73);
+}
+.cancel-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background-color: #e2e8f0;
+  color: #1e293b;
+  background-color:#ef4444 ;
+}
+@keyframes fadein {
+  from {opacity: 0;}
+  to {opacity: 0.9;}
+}
+.section-header .month-select{
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: -54%;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  margin-left: -2%;
+}
+
+.section-header input[type="month"]:focus {
+  outline: none;
+  border-color: #007bff; /* blue focus */
+  box-shadow: 0 0 3px #007bff;
+}
+
+/* Adjust button vertical alignment with input */
+.section-header .addbtn {
+  vertical-align: middle;
 }

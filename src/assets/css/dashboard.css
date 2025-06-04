@@ -8,6 +8,28 @@ body, html {
 * {
   box-sizing: border-box;
 }
+.eye-toggle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+    margin-left: 69%;
+    margin-top: 7px;
+
+}
+
+.eye-toggle button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: #333;
+  transition: color 0.2s ease;
+}
+
+.eye-toggle button:hover {
+  color: #007bff; /* blue on hover */
+}
 
 .container {
   display: flex;
@@ -41,15 +63,19 @@ body, html {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background-color: #1e293b;
-  border-bottom: 1px solid #334155;
 }
+
+.sidebar a {
+  text-decoration: none;
+  color: white;
+}
+
 
 .logo {
   font-size: 1.2rem;
   font-weight: bold;
     color: black;
+  margin-top: -5px;
 }
 
 .collapse-btn {
@@ -58,14 +84,17 @@ body, html {
   color: white;
   font-size: 1.2rem;
   cursor: pointer;
-  margin-left: -12%;
+  max-width: 100%;
+  overflow: hidden;
+  margin-left: 0px;
 }
-.sidebar.collapsed .collapse-btn{
-  margin-left: -53%;
+.sidebar.collapsed .collapse-btn {
+  margin-left: 0;
+  justify-content: center;
 }
 
+
 /* Navigation */
-/* Navigation Buttons */
 .nav-btn {
   width: 100%;
   background: none;
@@ -84,6 +113,7 @@ body, html {
 .nav-btn:hover,
 .nav-btn.active {
   background-color: #334155;
+  color: white;
 }
 
 
@@ -149,7 +179,7 @@ body, html {
 .topbar-content {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center;  
 }
 
 .actions {
@@ -157,6 +187,7 @@ body, html {
   gap: 1rem;
   align-items: center;
     color: black;
+    margin-top: -20px;
 }
 
 .income-btn,
@@ -169,13 +200,15 @@ body, html {
   border-radius: 5px;
 }
 .income-btn:hover {
-  transform: translateY(-1px);
+   transform: translateY(2px);
+  transition: background-color 0.3s ease;;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
  background-color: lightgreen;
   color: #065f46;;
 }
 .expense-btn:hover {
   transform: translateY(-1px);
+  transition: background-color 0.3s ease;;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
  background-color:  #ff6666;
   color: #065f46;;
@@ -202,6 +235,7 @@ body, html {
 }
 .card:hover {
   transform: translateY(-4px);
+  transition: background-color 0.1s ease;;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
  background-color: lightgreen;
   color: #065f46;;
@@ -240,8 +274,20 @@ background-color:  #ff6666;
   padding: 1rem;
   border-radius: 8px;
   min-width: 300px;
-    color: black;
+  color: black;
 }
+
+.chart-card:hover{
+  transform: translateY(-2px);
+  transition: background-color 0.3s ease;;
+  flex: 1 1 45%;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  min-width: 300px;
+  color: black;
+}
+
 
 .chart-card select {
     padding: 0.5rem;
@@ -249,6 +295,7 @@ background-color:  #ff6666;
     border: 1px solid #ddd;
     background-color: white;
     color: black;
+    margin-top: 10px;
 }
 
 
