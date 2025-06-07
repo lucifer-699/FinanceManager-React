@@ -177,7 +177,8 @@ const Dashboard: React.FC = () => {
 
         <header className="topbar">
           <div className="topbar-content">
-            <div className="title">Dashboard</div>
+            <div className="title">Financial Dashboard</div>
+            <div className="profile">Welcome back, {user ? `${user.firstname} ${user.lastname}` : ''}</div>
             <div className="actions">
               <button className="income-btn" onClick={() => navigate('/income')}>Income</button>
               <button className="expense-btn" onClick={() => navigate('/expense')}>Expense</button>

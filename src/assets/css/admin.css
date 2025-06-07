@@ -113,7 +113,69 @@ body, html {
     justify-content: space-between;
     align-items: center;
   }
-  
+  .addbtn {
+    background-color: #069265;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+    margin-left: 82%;
+    margin-bottom: 15px;
+    margin-top: -1%;
+}
+.mapping-view {
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.mapping-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allows wrapping on smaller screens */
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.mapping-header h5 {
+  font-size: 25px;
+  font-weight: 600;
+  margin: 0;
+  flex-grow: 1;
+}
+
+/* Right-side controls */
+.mapping-header .category-select,
+.mapping-header .addmapbtn {
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.mapping-header .category-select {
+  margin-right: 10px;
+  min-width: 160px;
+}
+
+.mapping-header .addmapbtn {
+   background-color: #069265;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.mapping-header .addmapbtn:hover {
+  background-color: #3e4555;
+}
+
   .actions {
     display: flex;
     gap: 1rem;
@@ -145,74 +207,114 @@ body, html {
     font-weight: bold;
   }
   
+/* Layout for forms */
 .admin-forms {
-  padding: 20px;
-  max-width: 600px;
+  padding: 2rem;
+  max-width: 720px;
   margin: 0 auto;
-      margin-left: 2%;
-
+  margin-left: 2%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+h6 {
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+    margin-top: 30px;
+    margin-left: 15px;
+    margin-bottom: -22px;
+    font-size: 25px;
 }
 
 .form {
-  margin-bottom: 40px;
+  margin-bottom: 3rem;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 1.5rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
   font-weight: 600;
+  color: #2f3542;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 8px 10px;
-  font-size: 16px;
+  padding: 10px 14px;
+  font-size: 15px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  transition: border 0.2s ease;
 }
 
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2f3542;
+}
+
+/* Buttons */
 .btn {
-  background-color: #2f3542;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
+    background-color: #2f3542;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    margin-left: 82%;
+    margin-bottom: 1%;
 }
 
 .btn:hover {
-  background-color: #57606f;
+  background-color: #3e4555;
 }
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}
+
+
+
+/* Toast notification */
 .toast {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  padding: 10px 20px;
+  padding: 12px 20px;
   color: white;
-  border-radius: 5px;
+  border-radius: 6px;
   z-index: 1000;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   animation: slideIn 0.3s ease forwards;
 }
 
-/* Success style */
 .toast.success {
-  background-color: #4caf50; /* Green */
+  background-color: #28a745; /* Modern green */
 }
 
-/* Error style */
 .toast.error {
-  background-color: #f44336; /* Red */
+  background-color: #dc3545; /* Modern red */
 }
 
-/* Optional animation */
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -222,4 +324,30 @@ body, html {
     opacity: 1;
     transform: translateX(0);
   }
+}
+.data-table th, .data-table td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+/* Modal Enhancements (optional) */
+.modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  margin: auto;
+  position: relative;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
