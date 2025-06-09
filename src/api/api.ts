@@ -2,7 +2,7 @@
 import axios from "axios";
 import { storage } from "../storage";
 
-const API_BASE_URL = "http://16.16.91.79:8442";
+const API_BASE_URL = "http://localhost:8442";
 
 // Existing loginUser function
 export const loginUser = async (email: string, password: string) => {
@@ -134,7 +134,7 @@ export const fetchSpendingTrend = async () => {
 export const fetchMonthlyIncomeExpense = async () => {
   try {
     const userid = storage.get("userid");
-    const response = await axios.get("http://16.16.91.79:8442/finance/incomeExpense", {
+    const response = await axios.get("http://localhost:8442/finance/incomeExpense", {
       params: { userid },
     });
     return response.data;
@@ -148,7 +148,7 @@ export const fetchMonthlyIncomeExpense = async () => {
 export const fetchAnalyticsCategory = async () => {
   try {
     const userid = storage.get("userid");
-    const response = await axios.get("http://16.16.91.79:8442/finance/analyticsCategory", {
+    const response = await axios.get("http://localhost:8442/finance/analyticsCategory", {
       params: { userid },
     });
     return response.data;
@@ -161,7 +161,10 @@ export const fetchAnalyticsCategory = async () => {
 // Fetch all categories (only 'Income' type will be used in UI)
 export const fetchCategories = async () => {
   try {
-    const response = await axios.get("http://16.16.91.79:8442/finance/categoryid");
+    const userid = storage.get("userid");
+    const response = await axios.get("http://localhost:8442/finance/categoryid", {
+      params: { userid },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -172,8 +175,9 @@ export const fetchCategories = async () => {
 // Fetch transaction types based on selected category
 export const fetchTransactionTypes = async (categoryid: string) => {
   try {
-    const response =  await axios.get("http://16.16.91.79:8442/finance/mapid", {
-      params: { categoryid },
+    const userid = storage.get("userid");
+    const response =  await axios.get("http://localhost:8442/finance/mapid", {
+      params: { categoryid, userid },
     });
     return response.data;
   } catch (error) {
@@ -264,10 +268,12 @@ export const insertCategory = async (
   categoryType: string
 ) => {
   try {
+     const userid = storage.get("userid");
     const response = await axios.post(`${API_BASE_URL}/finance/insertcategory`, null, {
       params: {
         categoryName,
         categoryType,
+        userid
       },
     });
     return response.data; // returns a boolean
@@ -284,11 +290,13 @@ export const insertCategoryMapping = async (
   transactionType: string
 ) => {
   try {
+     const userid = storage.get("userid");
     const response = await axios.post(`${API_BASE_URL}/finance/insertcategoryMapping`, null, {
       params: {
         categoryid,
         categoryType,
         transactionType,
+        userid
       },
     });
     return response.data; // returns a boolean
@@ -331,6 +339,15 @@ export const deleteTransaction = async (transactionid: string, userid: string) =
     return response.data; // true if deleted, false otherwise
   } catch (error) {
     console.error("Error deleting transaction:", error);
+    throw error;
+  }
+};
+export const deleteCategory = async (categoryid: string) => {
+  try {
+    const response = await axios.delete(`http://localhost:8442/finance/categoryid/${categoryid}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting category:", error);
     throw error;
   }
 };

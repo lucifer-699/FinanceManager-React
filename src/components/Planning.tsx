@@ -217,7 +217,7 @@ const Planning: React.FC = () => {
         <section className="planning-section">
           <div className="planning-header">
             <h2>Ongoing Financial Plans</h2>
-            <button className="addbtn" onClick={() => setIsModalOpen(true)}>
+            <button className="add-plan-btn" onClick={() => setIsModalOpen(true)}>
               <FontAwesomeIcon icon={faPlus} /> Add Plan
             </button>
           </div>
